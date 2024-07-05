@@ -32,7 +32,7 @@ export default function Card({
   return (
     <div
       className={cn(
-        'w-full rounded-lg py-2 px-4 bg-red-400 text-white flex gap-4 relative',
+        'w-full rounded-lg py-2 px-4 bg-red-400 text-white flex gap-4 relative justify-between items-center',
         className
       )}
     >

@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 
 export default function DeleteButton({ onClick }: { onClick: () => void }) {
   const [countClick, setCountClick] = useState(0)

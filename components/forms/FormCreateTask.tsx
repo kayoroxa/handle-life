@@ -79,7 +79,7 @@ export default function FormCreateTask({
         weeklyTarget: {
           label: 'Weekly target (BIG UNIT)',
           description: stateValues.weeklyTarget && (
-            <>
+            <div>
               <p className="text-gray-500 text-sm">
                 It means at day:{' '}
                 {parseFloat((stateValues.weeklyTarget / 7).toFixed(2))}
@@ -89,11 +89,11 @@ export default function FormCreateTask({
                 or: {Math.round((stateValues.weeklyTarget / 7) * 60)} min per
                 day
               </p>
-            </>
+            </div>
           ),
         },
         unitSmallLabel: {
-          label: 'Unit small label (BUTTONS)',
+          label: 'Unit small label (Label to show in buttons actions)',
           description: 'Recommended: min',
         },
         unitBigLabel: {

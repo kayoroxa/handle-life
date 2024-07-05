@@ -30,7 +30,10 @@ export function ButtonsTime({ data }: IProps) {
 
 export function MoreOptions({ href }: { href: string }) {
   return (
-    <Link href={href} className="ml-auto flex items-center">
+    <Link
+      href={href}
+      className="ml-auto flex items-center justify-center hover:bg-black/10 rounded-full w-10 h-10"
+    >
       <IoIosMore className="hover:cursor-pointer" />
     </Link>
   )

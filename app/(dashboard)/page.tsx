@@ -5,6 +5,10 @@ import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
 import { _addDoneAmountInTask, _getTasks } from '../actions'
 
+function roundFloat(value: number, precision: number = 2) {
+  return parseFloat(value.toFixed(precision))
+}
+
 export default async function Home() {
   const session = await getServerSession()
   const email = session?.user?.email
@@ -49,12 +53,12 @@ export default async function Home() {
               }}
             ></div> */}
 
-              <section className="flex flex-col">
+              <section className="flex flex-col w-10">
                 <div>💵</div>
                 <h3>{Math.round(task.percent * 100)}%</h3>
               </section>
               <section className="flex flex-col gap-1">
-                <h2>{task.name}</h2>
+                <h2 className="w-48 max-w-48 text-ellipsis">{task.name}</h2>
 
                 <Card.Velocity
                   percent={task.totalCompletedLast7Days / task.weeklyTarget}
@@ -62,7 +66,7 @@ export default async function Home() {
               </section>
               <Card.ButtonsTime
                 data={{
-                  values: [5, 10, 15, 2000],
+                  values: [5, 10, 15, 30, 60, 120],
                   label: 'min',
                   onClick: async () => {
                     'use server'
@@ -70,16 +74,18 @@ export default async function Home() {
                   },
                 }}
               />
-              <div className="flex flex-col">
+              <div className="flex flex-col ">
                 <h1>week:</h1>
                 <h1>
-                  {task.totalCompleted} / {task.weeklyTarget}
+                  {roundFloat(task.totalCompleted)} /{' '}
+                  {roundFloat(task.weeklyTarget)}
                 </h1>
               </div>
               <div className="flex flex-col ml-4">
                 <h1>total:</h1>
                 <h1>
-                  {task.totalCompleted} / {task.projectCompletionTarget}
+                  {roundFloat(task.totalCompleted)} /{' '}
+                  {roundFloat(task.projectCompletionTarget)}
                 </h1>
               </div>
               <Card.MoreOptions href={`/task/${task.id}`} />
