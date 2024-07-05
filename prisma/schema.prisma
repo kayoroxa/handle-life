@@ -14,11 +14,45 @@ datasource db {
 }
 
 model User {
-  id      Int     @id @default(autoincrement())
-  email   String  @unique
-  name    String?
-  blocked Boolean @default(false)
-  isAdmin Boolean @default(false)
-  // authorized
-  imgUrl  String?
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  name       String?
+  blocked    Boolean    @default(false)
+  isAdmin    Boolean    @default(false)
+  imgUrl     String?
+  categories Category[]
+  tasks      Task[]
+}
+
+model Category {
+  id     Int    @id @default(autoincrement())
+  name   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @map("user_id")
+  tasks  Task[] // Relacionamento para tarefas que pertencem a esta categoria
+}
+
+model Task {
+  id                      Int       @id @default(autoincrement())
+  name                    String
+  percent                 Float
+  isDone                  Boolean   @default(false)
+  weeklyTarget            Float
+  projectCompletionTarget Float
+  totalCompleted          Float
+  lastDoneDate            DateTime
+  user                    User      @relation(fields: [userId], references: [id])
+  userId                  Int       @map("user_id")
+  taskLogs                TaskLog[]
+  notes                   String?
+
+  categories Category[] // Relacionamento para múltiplas categorias
+}
+
+model TaskLog {
+  id         Int      @id @default(autoincrement())
+  date       DateTime @default(now())
+  task       Task     @relation(fields: [taskId], references: [id])
+  taskId     Int      @map("task_id")
+  doneAmount Float
 }
