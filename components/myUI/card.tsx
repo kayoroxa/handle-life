@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils'
-import { IoIosMore } from 'react-icons/io'
-import { ButtonsTime } from './buttons-time'
+import { ButtonsTime, MoreOptions } from './buttons-time'
 
 function Button({ children }: { children: React.ReactNode }) {
   return <button className="">{children}</button>
@@ -23,14 +22,6 @@ function Velocity({ percent }: { percent: number }) {
   )
 }
 
-function MoreOptions() {
-  return (
-    <section className="ml-auto flex items-center">
-      <IoIosMore className="hover:cursor-pointer" />
-    </section>
-  )
-}
-
 export default function Card({
   children,
   className,
@@ -48,32 +39,32 @@ export default function Card({
       {children}
     </div>
   )
-  return (
-    <div className="w-full rounded-lg py-2 px-4 bg-red-400 text-white flex gap-4">
-      <section className="flex flex-col">
-        <div>💵</div>
-        <h3>25%</h3>
-      </section>
-      <section className="flex flex-col gap-1">
-        <h2>Novo Canal</h2>
-        <Velocity percent={0.5} />
-      </section>
-      <ButtonsTime data={{ values: [5, 10, 15, 20], label: 'min' }} />
-      <MoreOptions />
-      {children}
-      {/* <input
-        type="range"
-        name=""
-        id=""
-        min={0}
-        max={100}
-        step={1}
-        onChange={e => {
-          setPercent(Number(e.target.value) / 100)
-        }}
-      /> */}
-    </div>
-  )
+  // return (
+  //   <div className="w-full rounded-lg py-2 px-4 bg-red-400 text-white flex gap-4">
+  //     <section className="flex flex-col">
+  //       <div>💵</div>
+  //       <h3>25%</h3>
+  //     </section>
+  //     <section className="flex flex-col gap-1">
+  //       <h2>Novo Canal</h2>
+  //       <Velocity percent={0.5} />
+  //     </section>
+  //     <ButtonsTime data={{ values: [5, 10, 15, 20], label: 'min' }} />
+  //     <MoreOptions />
+  //     {children}
+  //     {/* <input
+  //       type="range"
+  //       name=""
+  //       id=""
+  //       min={0}
+  //       max={100}
+  //       step={1}
+  //       onChange={e => {
+  //         setPercent(Number(e.target.value) / 100)
+  //       }}
+  //     /> */}
+  //   </div>
+  // )
 }
 
 Card.Velocity = Velocity

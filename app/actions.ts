@@ -51,6 +51,33 @@ export async function serverLogin({ email }: { email: string }) {
   redirect('/')
 }
 
+export async function _modifyTask({
+  taskId,
+  data,
+}: {
+  taskId: Task['id']
+  data: Partial<Task>
+}) {
+  const task = await prisma.task.update({
+    where: {
+      id: taskId,
+    },
+    data,
+  })
+
+  return task
+}
+
+export async function _getTask({ taskId }: { taskId: Task['id'] }) {
+  const task = await prisma.task.findUnique({
+    where: {
+      id: taskId,
+    },
+  })
+
+  return task
+}
+
 export async function _getTasks({ email }: { email?: string }) {
   const session = await getServerSession()
   email = email || session?.user?.email || undefined
@@ -117,13 +144,17 @@ export async function _createTask({
   percent,
   weeklyTarget,
   projectCompletionTarget,
-  userId,
+  unitSmallLabel,
+  unitBigLabel,
+  userEmail,
 }: {
   name: string
-  percent: number
-  weeklyTarget: number
   projectCompletionTarget: number
-  userId: number
+  percent: number
+  unitSmallLabel?: string
+  unitBigLabel?: string
+  weeklyTarget: number
+  userEmail: string
 }) {
   const task = await prisma.task.create({
     data: {
@@ -131,7 +162,15 @@ export async function _createTask({
       percent,
       weeklyTarget,
       projectCompletionTarget,
-      userId,
+
+      user: {
+        connect: {
+          email: userEmail,
+        },
+      },
+      unitBigLabel,
+      unitSmallLabel,
+
       // Incluir outras propriedades obrigatórias do modelo Task
       totalCompleted: 0, // ou outro valor inicial apropriado
       lastDoneDate: new Date(), // ou outro valor inicial apropriado

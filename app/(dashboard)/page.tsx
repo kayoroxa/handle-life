@@ -1,6 +1,8 @@
 import Card from '@/components/myUI/card'
+import { Button } from '@/components/ui/button'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
+import Link from 'next/link'
 import { _addDoneAmountInTask, _getTasks } from '../actions'
 
 export default async function Home() {
@@ -13,7 +15,7 @@ export default async function Home() {
 
   async function handleButtonsTimeClick(value: number, taskId: number) {
     'use server'
-    console.log(value)
+    // console.log(value)
 
     await _addDoneAmountInTask({
       taskId: taskId,
@@ -29,7 +31,13 @@ export default async function Home() {
         Avatar: 🤖
       </section>
       <section className="w-full bg-gray-600 p-4 rounded-lg flex flex-col gap-4">
-        <h1>Hábitos:</h1>
+        <header className="flex gap-4 items-center">
+          <h1>Hábitos/Tasks:</h1>
+
+          <Link href="/task/create">
+            <Button>Create Habit/Task</Button>
+          </Link>
+        </header>
 
         {tasks.map(task => (
           <div key={task.id} className="relative rounded-lg overflow-hidden">
@@ -74,7 +82,7 @@ export default async function Home() {
                   {task.totalCompleted} / {task.projectCompletionTarget}
                 </h1>
               </div>
-              <Card.MoreOptions />
+              <Card.MoreOptions href={`/task/${task.id}`} />
               <div
                 className="absolute left-0 bg-blue-400 bottom-0 rounded-tr-full -z-10"
                 style={{ width: 100 * task.percent + '%' }}

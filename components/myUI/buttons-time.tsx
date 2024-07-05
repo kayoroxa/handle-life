@@ -1,4 +1,8 @@
 'use client'
+
+import Link from 'next/link'
+import { IoIosMore } from 'react-icons/io'
+
 interface IProps {
   data: {
     values: number[]
@@ -21,5 +25,13 @@ export function ButtonsTime({ data }: IProps) {
         </button>
       ))}
     </section>
+  )
+}
+
+export function MoreOptions({ href }: { href: string }) {
+  return (
+    <Link href={href} className="ml-auto flex items-center">
+      <IoIosMore className="hover:cursor-pointer" />
+    </Link>
   )
 }

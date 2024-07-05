@@ -38,7 +38,7 @@ export default function Home({
     async function handleAutoSubmit(email: string) {
       const result = await serverLogin({ email })
 
-      console.log({ result })
+      // console.log({ result })
       if (result === false) {
         toast({
           title: 'Você não tem acesso ao curso.',

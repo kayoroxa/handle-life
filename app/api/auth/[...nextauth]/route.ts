@@ -33,7 +33,7 @@ const handler: NextAuthOptions = NextAuth({
         })
 
         if (user) {
-          console.log(credentials)
+          // console.log(credentials)
 
           return {
             id: String(user.id),
