@@ -46,7 +46,14 @@ export default async function Home() {
 
         {tasks.map(task => (
           <div key={task.id} className="relative rounded-lg overflow-hidden">
-            <Card className={cn('z-10', getColorByPercent(task.percent))}>
+            <Card
+              className={cn(
+                'z-10',
+                getColorByPercent(
+                  task.totalCompletedLast7Days / task.weeklyTarget
+                )
+              )}
+            >
               {/* <div
               className="bg-blue-400 absolute left-0 bottom-0 pb-[50%]"
               style={{
@@ -94,7 +101,10 @@ export default async function Home() {
               <div
                 className={cn(
                   'absolute left-0 bg-blue-400 bottom-0 rounded-tr-full -z-10',
-                  getColorByPercent(task.percent, 'light')
+                  getColorByPercent(
+                    task.totalCompletedLast7Days / task.weeklyTarget,
+                    'light'
+                  )
                 )}
                 style={{ width: 100 * task.percent + '%' }}
               >
