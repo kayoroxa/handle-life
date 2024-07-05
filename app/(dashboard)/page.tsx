@@ -68,7 +68,6 @@ export default async function Home() {
               <section className="flex flex-col gap-1">
                 <h2 className="w-48 max-w-48 text-ellipsis">{task.name}</h2>
 
-                <p>{task.totalCompletedLast7Days / task.weeklyTarget}</p>
                 <Card.Velocity
                   percent={task.totalCompletedLast7Days / task.weeklyTarget}
                 />
