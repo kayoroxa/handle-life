@@ -1,5 +1,6 @@
-import { _getTask, _modifyTask } from '@/app/actions'
+import { _deleteTask, _getTask, _modifyTask } from '@/app/actions'
 import FormCreateTask from '@/components/forms/FormCreateTask'
+import DeleteButton from '@/components/myUI/delete-button'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -28,6 +29,14 @@ export default async function Home({ params }: { params: { id: string } }) {
           unitSmallLabel: task.unitSmallLabel,
         }}
         submitText="Okay, Edit Task!"
+      />
+      <DeleteButton
+        onClick={async () => {
+          'use server'
+          await _deleteTask({ id: task.id })
+          revalidatePath('/')
+          redirect('/')
+        }}
       />
     </div>
   )

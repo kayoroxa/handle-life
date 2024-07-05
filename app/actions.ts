@@ -132,11 +132,15 @@ export async function _getTasks({ email }: { email?: string }) {
 }
 
 export async function _deleteTask({ id }: { id: Task['id'] }) {
-  await prisma.task.delete({
-    where: {
-      id,
-    },
-  })
+  try {
+    await prisma.task.delete({
+      where: {
+        id,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function _createTask({
