@@ -20,8 +20,8 @@ export default function Home({
 
     if (result === false) {
       toast({
-        title: 'Você não tem acesso ao curso.',
-        description: 'Me chame no whatsapp',
+        title: 'Você não tem acesso.',
+        description: 'Me chame no telegram',
       })
       return
     } else {
@@ -38,6 +38,7 @@ export default function Home({
     async function handleAutoSubmit(email: string) {
       const result = await serverLogin({ email })
 
+      console.log({ result })
       if (result === false) {
         toast({
           title: 'Você não tem acesso ao curso.',
