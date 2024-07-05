@@ -1,5 +1,6 @@
-import Card from '@/components/myUI/card'
+import Card, { getColorByPercent } from '@/components/myUI/card'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
@@ -45,7 +46,7 @@ export default async function Home() {
 
         {tasks.map(task => (
           <div key={task.id} className="relative rounded-lg overflow-hidden">
-            <Card className="z-10">
+            <Card className={cn('z-10', getColorByPercent(task.percent))}>
               {/* <div
               className="bg-blue-400 absolute left-0 bottom-0 pb-[50%]"
               style={{
@@ -60,6 +61,7 @@ export default async function Home() {
               <section className="flex flex-col gap-1">
                 <h2 className="w-48 max-w-48 text-ellipsis">{task.name}</h2>
 
+                <p>{task.totalCompletedLast7Days / task.weeklyTarget}</p>
                 <Card.Velocity
                   percent={task.totalCompletedLast7Days / task.weeklyTarget}
                 />
@@ -77,7 +79,7 @@ export default async function Home() {
               <div className="flex flex-col ">
                 <h1>week:</h1>
                 <h1>
-                  {roundFloat(task.totalCompleted)} /{' '}
+                  {roundFloat(task.totalCompletedLast7Days)} /{' '}
                   {roundFloat(task.weeklyTarget)}
                 </h1>
               </div>
@@ -90,7 +92,10 @@ export default async function Home() {
               </div>
               <Card.MoreOptions href={`/task/${task.id}`} />
               <div
-                className="absolute left-0 bg-blue-400 bottom-0 rounded-tr-full -z-10"
+                className={cn(
+                  'absolute left-0 bg-blue-400 bottom-0 rounded-tr-full -z-10',
+                  getColorByPercent(task.percent, 'light')
+                )}
                 style={{ width: 100 * task.percent + '%' }}
               >
                 <div className="pb-[100%]"></div>

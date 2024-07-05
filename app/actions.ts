@@ -103,28 +103,34 @@ export async function _getTasks({ email }: { email?: string }) {
     },
   })
 
-  const totalCompletedLast7Days = tasks.reduce((sum, task) => {
+  const getTotalCompletedLast7Days = (task: (typeof tasks)[0]) => {
     const lastLogs7Days = task.taskLogs.filter(log => {
       return log.date >= sevenDaysAgo
     })
     const taskCompletedLast7Days = lastLogs7Days.reduce((taskSum, log) => {
       return taskSum + log.doneAmount // Supondo que há um campo `doneAmount` no TaskLog para indicar o progresso diário
     }, 0)
-    return sum + taskCompletedLast7Days
-  }, 0)
+    return taskCompletedLast7Days
+  }
 
   const tasksData = tasks.map(task => {
     const totalCompleted = task.taskLogs.reduce((taskSum, log) => {
       return taskSum + log.doneAmount
     }, 0)
+
+    const totalCompletedLast7Days = parseFloat(
+      getTotalCompletedLast7Days(task).toFixed(2)
+    )
+
+    const percent = parseFloat(
+      (totalCompleted / task.projectCompletionTarget).toFixed(2)
+    )
     return {
       ...task,
-      totalCompletedLast7Days: parseFloat(totalCompletedLast7Days.toFixed(2)),
+      totalCompletedLast7Days,
       lastDoneDate: task.taskLogs[0]?.date || new Date(),
       totalCompleted,
-      percent: parseFloat(
-        (totalCompleted / task.projectCompletionTarget).toFixed(2)
-      ),
+      percent,
     }
   })
 
@@ -141,6 +147,27 @@ export async function _deleteTask({ id }: { id: Task['id'] }) {
   } catch (error) {
     console.error(error)
   }
+}
+
+export async function _cleanTaskLogs({ taskId }: { taskId: Task['id'] }) {
+  return Promise.all([
+    prisma.taskLog.deleteMany({
+      where: {
+        taskId,
+      },
+    }),
+
+    prisma.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        totalCompleted: 0,
+        percent: 0,
+        isDone: false,
+      },
+    }),
+  ])
 }
 
 export async function _createTask({

@@ -22,6 +22,18 @@ function Velocity({ percent }: { percent: number }) {
   )
 }
 
+export function getColorByPercent(value: number, variant?: 'light' | 'dark') {
+  if (value < (1 / 5) * 1)
+    return variant === 'light' ? 'bg-red-600' : 'bg-red-700'
+  if (value < (1 / 5) * 2)
+    return variant === 'light' ? 'bg-red-500' : 'bg-red-600'
+  if (value < (1 / 5) * 3)
+    return variant === 'light' ? 'bg-yellow-500' : 'bg-yellow-600'
+  if (value < (1 / 5) * 4)
+    return variant === 'light' ? 'bg-green-600' : 'bg-green-700'
+  if (value <= 1) return variant === 'light' ? 'bg-green-500' : 'bg-green-600'
+}
+
 export default function Card({
   children,
   className,

@@ -1,4 +1,9 @@
-import { _deleteTask, _getTask, _modifyTask } from '@/app/actions'
+import {
+  _cleanTaskLogs,
+  _deleteTask,
+  _getTask,
+  _modifyTask,
+} from '@/app/actions'
 import FormCreateTask from '@/components/forms/FormCreateTask'
 import DeleteButton from '@/components/myUI/delete-button'
 import { revalidatePath } from 'next/cache'
@@ -30,14 +35,27 @@ export default async function Home({ params }: { params: { id: string } }) {
         }}
         submitText="Okay, Edit Task!"
       />
-      <DeleteButton
-        onClick={async () => {
-          'use server'
-          await _deleteTask({ id: task.id })
-          revalidatePath('/')
-          redirect('/')
-        }}
-      />
+      <footer className="bottom-0 right-0 absolute flex gap-8">
+        <DeleteButton
+          title="Reset Progress"
+          onClick={async () => {
+            'use server'
+            await _cleanTaskLogs({ taskId: task.id })
+            revalidatePath('/')
+            redirect('/')
+          }}
+        />
+
+        <DeleteButton
+          title="Delete Task"
+          onClick={async () => {
+            'use server'
+            await _deleteTask({ id: task.id })
+            revalidatePath('/')
+            redirect('/')
+          }}
+        />
+      </footer>
     </div>
   )
 }

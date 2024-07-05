@@ -1,10 +1,16 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 
-export default function DeleteButton({ onClick }: { onClick: () => void }) {
+export default function DeleteButton({
+  onClick,
+  title,
+}: {
+  onClick: () => void
+  title?: string
+}) {
   const [countClick, setCountClick] = useState(0)
   return countClick < 2 ? (
     <Button
@@ -15,14 +21,14 @@ export default function DeleteButton({ onClick }: { onClick: () => void }) {
         })
       }}
       className={cn(
-        'bg-red-400 absolute bottom-0 right-0 hover:bg-red-500 transition-all',
+        'bg-red-400  hover:bg-red-500 transition-all',
         countClick === 1 && 'bg-red-600 scale-75 hover:bg-red-700'
       )}
     >
-      {countClick == 0 && 'Delete'}
-      {countClick == 1 && 'Click again to delete'}
+      {countClick == 0 && (title || 'Delete')}
+      {countClick == 1 && `Click again to ${title || 'Delete'}`}
     </Button>
   ) : (
-    <div className="absolute bottom-0 right-0">Okay, Carregando!</div>
+    <div className="">Okay, Carregando!</div>
   )
 }
