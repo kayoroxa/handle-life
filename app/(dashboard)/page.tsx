@@ -63,7 +63,7 @@ export default async function Home() {
 
               <section className="flex flex-col w-10">
                 <div>💵</div>
-                <h3>{Math.round(task.percent * 100)}%</h3>
+                <h3>{roundFloat(task.percent * 100)}%</h3>
               </section>
               <section className="flex flex-col gap-1">
                 <h2 className="w-48 max-w-48 text-ellipsis">{task.name}</h2>

@@ -122,9 +122,8 @@ export async function _getTasks({ email }: { email?: string }) {
       getTotalCompletedLast7Days(task).toFixed(2)
     )
 
-    const percent = parseFloat(
-      (totalCompleted / task.projectCompletionTarget).toFixed(2)
-    )
+    const percent = totalCompleted / task.projectCompletionTarget
+
     return {
       ...task,
       totalCompletedLast7Days,
