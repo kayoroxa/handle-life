@@ -1,2 +1,2 @@
-start msedge http://localhost:3000
+start msedge http://localhost:6700
 yarn next start

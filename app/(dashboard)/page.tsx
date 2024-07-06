@@ -29,6 +29,26 @@ function getLabelWeek(taskCreatedDate: Date) {
   return 'Last ' + daysTaskHasBeenCreated + ' days'
 }
 
+function getWeeklyText(task: any) {
+  const today = roundFloat(task.totalCompletedLast7Days)
+  const target = roundFloat(
+    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
+  )
+
+  if (
+    task.unitSmallLabel.toLowerCase() === 'min' &&
+    (today < 1 || target < 1)
+  ) {
+    return `${Math.round(today * 60)} / ${Math.round(target * 60)} min`
+  }
+
+  if (task.unitSmallLabel.toLowerCase() === 'min') {
+    return `${today} / ${target} hours`
+  }
+
+  return `${today} / ${target}`
+}
+
 export default async function Home() {
   const session = await getServerSession()
   const email = session?.user?.email
@@ -107,12 +127,7 @@ export default async function Home() {
               />
               <div className="flex flex-col ">
                 <h1>{getLabelWeek(task.createdAt)}:</h1>
-                <h1>
-                  {roundFloat(task.totalCompletedLast7Days)} /{' '}
-                  {roundFloat(
-                    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
-                  )}
-                </h1>
+                <h1>{getWeeklyText(task)}</h1>
               </div>
               <div className="flex flex-col ml-4">
                 <h1>total:</h1>
