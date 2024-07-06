@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "check": "tsc --pretty --noEmit",
-    "p1": "prisma migrate dev",
+    "p1": "prisma migrate dev --name change",
     "p2": "prisma generate"
   },
   "dependencies": {

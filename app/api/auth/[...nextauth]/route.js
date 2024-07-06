@@ -1,26 +1,30 @@
 import { prisma } from '@/lib/prisma'
-import { NextAuthOptions } from 'next-auth'
-import NextAuth from 'next-auth/next'
+import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-const handler: NextAuthOptions = NextAuth({
+// Define a wrapper function to adapt NextApiRequest to NextRequest
+const adaptRequest = req => {
+  // You may need to adapt this according to your specific needs
+  const adaptedReq = req // Adapt this as needed
+  return adaptedReq
+}
+
+// Define the NextAuth configuration
+const options = {
   pages: {
     signIn: '/login',
   },
-
   providers: [
     CredentialsProvider({
       name: 'Credentials',
-
       credentials: {
         email: {
           label: 'email',
           type: 'email',
           placeholder: 'seu_email@exemplo.com',
         },
-        // password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials) return null
 
         const { email } = credentials
@@ -33,8 +37,6 @@ const handler: NextAuthOptions = NextAuth({
         })
 
         if (user) {
-          // console.log(credentials)
-
           return {
             id: String(user.id),
             email,
@@ -45,16 +47,10 @@ const handler: NextAuthOptions = NextAuth({
       },
     }),
   ],
-  // callbacks: {
-  //   session({ session, user }) {
-  //     if (session.user) {
-  //       session.user.id = user.id
-  //       return session
-  //     }
+}
 
-  //     return session
-  //   },
-  // },
-})
+// Create the handler function using NextAuth with the adapted request
+const handler = (req, res) => NextAuth(adaptRequest(req), res, options)
 
+// Export the handler for different HTTP methods
 export { handler as GET, handler as POST }
