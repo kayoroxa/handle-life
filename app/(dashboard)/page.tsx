@@ -11,7 +11,6 @@ function roundFloat(value: number, precision: number = 2) {
 }
 
 function getDaysUntilNow(date: Date) {
-  if (!date) return 1
   const now = new Date()
   const diff = now.getTime() - date.getTime()
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
