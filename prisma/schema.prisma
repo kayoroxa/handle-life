@@ -47,6 +47,7 @@ model Task {
   userId                  Int       @map("user_id")
   taskLogs                TaskLog[]
   notes                   String?
+  createdAt               DateTime  @default(now())
 
   categories Category[] // Relacionamento para múltiplas categorias
 }

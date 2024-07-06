@@ -23,7 +23,6 @@ function Velocity({ percent }: { percent: number }) {
 }
 
 export function getColorByPercent(value: number, variant?: 'light' | 'dark') {
-  console.log(value)
   if (value < (1 / 5) * 1)
     return variant === 'light' ? 'bg-red-600' : 'bg-red-700'
   if (value < (1 / 5) * 2)

@@ -128,6 +128,7 @@ export async function _getTasks({ email }: { email?: string }) {
       ...task,
       totalCompletedLast7Days,
       lastDoneDate: task.taskLogs[0]?.date || new Date(),
+      lastDaysHistoricalDone: task.taskLogs.map(log => log.doneAmount),
       totalCompleted,
       percent,
     }
@@ -252,4 +253,13 @@ export async function _addDoneAmountInTask({
       },
     })
   }
+
+  await prisma.task.update({
+    where: { id: taskId },
+    data: {
+      totalCompleted: {
+        increment: number,
+      },
+    },
+  })
 }

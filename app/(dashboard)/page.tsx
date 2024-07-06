@@ -10,6 +10,25 @@ function roundFloat(value: number, precision: number = 2) {
   return parseFloat(value.toFixed(precision))
 }
 
+function getDaysUntilNow(date: Date) {
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  return Math.ceil(diff / (1000 * 60 * 60 * 24))
+}
+
+const getTrueWeekTarget = (taskCreatedDate: Date, taskWeeklyTarget: number) => {
+  const daysTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate)
+  if (daysTaskHasBeenCreated > 7) return taskWeeklyTarget
+  return (taskWeeklyTarget / 7) * daysTaskHasBeenCreated
+}
+
+function getLabelWeek(taskCreatedDate: Date) {
+  const daysTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate)
+  if (daysTaskHasBeenCreated > 7) return 'Week'
+  if (daysTaskHasBeenCreated === 1) return 'Today'
+  return 'Last ' + daysTaskHasBeenCreated + ' days'
+}
+
 export default async function Home() {
   const session = await getServerSession()
   const email = session?.user?.email
@@ -50,7 +69,8 @@ export default async function Home() {
               className={cn(
                 'z-10',
                 getColorByPercent(
-                  task.totalCompletedLast7Days / task.weeklyTarget
+                  task.totalCompletedLast7Days /
+                    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
                 )
               )}
             >
@@ -69,24 +89,29 @@ export default async function Home() {
                 <h2 className="w-48 max-w-48 text-ellipsis">{task.name}</h2>
 
                 <Card.Velocity
-                  percent={task.totalCompletedLast7Days / task.weeklyTarget}
+                  percent={
+                    task.totalCompletedLast7Days /
+                    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
+                  }
                 />
               </section>
               <Card.ButtonsTime
                 data={{
                   values: [5, 10, 15, 30, 60, 120],
                   label: 'min',
-                  onClick: async () => {
+                  onClick: async (value: number) => {
                     'use server'
-                    await handleButtonsTimeClick(5, task.id)
+                    await handleButtonsTimeClick(value, task.id)
                   },
                 }}
               />
               <div className="flex flex-col ">
-                <h1>week:</h1>
+                <h1>{getLabelWeek(task.createdAt)}:</h1>
                 <h1>
                   {roundFloat(task.totalCompletedLast7Days)} /{' '}
-                  {roundFloat(task.weeklyTarget)}
+                  {roundFloat(
+                    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
+                  )}
                 </h1>
               </div>
               <div className="flex flex-col ml-4">
@@ -101,7 +126,8 @@ export default async function Home() {
                 className={cn(
                   'absolute left-0 bg-blue-400 bottom-0 rounded-tr-full -z-10',
                   getColorByPercent(
-                    task.totalCompletedLast7Days / task.weeklyTarget,
+                    task.totalCompletedLast7Days /
+                      getTrueWeekTarget(task.createdAt, task.weeklyTarget),
                     'light'
                   )
                 )}
