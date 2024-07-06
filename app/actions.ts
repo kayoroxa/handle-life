@@ -78,6 +78,8 @@ export async function _getTask({ taskId }: { taskId: Task['id'] }) {
   return task
 }
 
+export type _GetTasks = Awaited<ReturnType<typeof _getTasks>>
+
 export async function _getTasks({ email }: { email?: string }) {
   const session = await getServerSession()
   email = email || session?.user?.email || undefined
@@ -128,7 +130,6 @@ export async function _getTasks({ email }: { email?: string }) {
       ...task,
       totalCompletedLast7Days,
       lastDoneDate: task.taskLogs[0]?.date || new Date(),
-      lastDaysHistoricalDone: task.taskLogs.map(log => log.doneAmount),
       totalCompleted,
       percent,
     }
@@ -225,6 +226,15 @@ export async function _addDoneAmountInTask({
   const startOfDay = new Date(today.setHours(0, 0, 0, 0))
   const endOfDay = new Date(today.setHours(23, 59, 59, 999))
 
+  await prisma.task.update({
+    where: { id: taskId },
+    data: {
+      totalCompleted: {
+        increment: number,
+      },
+    },
+  })
+
   const existingLog = await prisma.taskLog.findFirst({
     where: {
       taskId: taskId,
@@ -253,13 +263,4 @@ export async function _addDoneAmountInTask({
       },
     })
   }
-
-  await prisma.task.update({
-    where: { id: taskId },
-    data: {
-      totalCompleted: {
-        increment: number,
-      },
-    },
-  })
 }

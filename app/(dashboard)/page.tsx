@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
-import { _addDoneAmountInTask, _getTasks } from '../actions'
+import { _addDoneAmountInTask, _GetTasks, _getTasks } from '../actions'
 
 function roundFloat(value: number, precision: number = 2) {
   return parseFloat(value.toFixed(precision))
@@ -14,6 +14,13 @@ function getDaysUntilNow(date: Date) {
   const now = new Date()
   const diff = now.getTime() - date.getTime()
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
+}
+
+function brDate(date: Date): string {
+  const day = date.getDate().toString().padStart(2, '0') // Dia com zero à esquerda, se necessário
+  const month = date.getMonth().toString().padStart(2, '0') // Mês com zero à esquerda, pois Janeiro é 0
+  const year = date.getFullYear()
+  return `${day}/${month}/${year}`
 }
 
 const getTrueWeekTarget = (taskCreatedDate: Date, taskWeeklyTarget: number) => {
@@ -29,7 +36,7 @@ function getLabelWeek(taskCreatedDate: Date) {
   return 'Last ' + daysTaskHasBeenCreated + ' days'
 }
 
-function getWeeklyText(task: any) {
+function getWeeklyText(task: _GetTasks[number]) {
   const today = roundFloat(task.totalCompletedLast7Days)
   const target = roundFloat(
     getTrueWeekTarget(task.createdAt, task.weeklyTarget)
@@ -46,7 +53,25 @@ function getWeeklyText(task: any) {
     return `${today} / ${target} hours`
   }
 
-  return `${today} / ${target}`
+  return `${today} / ${target} ${task.unitBigLabel.toLowerCase()}`
+}
+
+function predictCompletionDate(task: _GetTasks[number]): Date {
+  const today = new Date()
+
+  const trabalhoRestante = task.projectCompletionTarget - task.totalCompleted
+  if (trabalhoRestante <= 0) {
+    return today // Retorna a data de hoje se a meta já foi atingida
+  }
+
+  const weeklyTarget = task.weeklyTarget
+  const howManyWeeks = trabalhoRestante / weeklyTarget
+
+  // Calcula a data estimada de conclusão adicionando o número de semanas necessárias
+  const endDate = new Date(
+    today.getTime() + howManyWeeks * 7 * 24 * 60 * 60 * 1000
+  )
+  return endDate
 }
 
 export default async function Home() {
@@ -118,7 +143,7 @@ export default async function Home() {
               <Card.ButtonsTime
                 data={{
                   values: [5, 10, 15, 30, 60, 120],
-                  label: 'min',
+                  label: task.unitSmallLabel,
                   onClick: async (value: number) => {
                     'use server'
                     await handleButtonsTimeClick(value, task.id)
@@ -136,7 +161,10 @@ export default async function Home() {
                   {roundFloat(task.projectCompletionTarget)}
                 </h1>
               </div>
-              <Card.MoreOptions href={`/task/${task.id}`} />
+              <section className="ml-auto flex gap-2 items-center">
+                <div>{brDate(predictCompletionDate(task))}</div>
+                <Card.MoreOptions href={`/task/${task.id}`} />
+              </section>
               <div
                 className={cn(
                   'absolute left-0 bottom-0 rounded-tr-full -z-10 shadow-black/80 shadow-2xl',

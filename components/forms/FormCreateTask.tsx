@@ -37,10 +37,10 @@ const formSchema = z.object({
   }),
   unitBigLabel: z
     .string({ required_error: 'Unit big label is required.' })
-    .max(5),
+    .max(10),
   unitSmallLabel: z
     .string({ required_error: 'Unit small label is required.' })
-    .max(5),
+    .max(10),
 })
 
 export default function FormCreateTask({
