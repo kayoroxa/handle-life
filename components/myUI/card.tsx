@@ -14,9 +14,9 @@ function Velocity({ percent }: { percent: number }) {
         style={{ left: `${Math.min(percent, 1) * 100}%` }}
       />
       <div className="bg-red-500 w-6 h-full rounded-sm border border-white" />
-      <div className="bg-red-400 w-6 h-full rounded-sm border border-white" />
+      <div className="bg-orange-400 w-6 h-full rounded-sm border border-white" />
       <div className="bg-yellow-400 w-6 h-full rounded-sm border border-white" />
-      <div className="bg-green-500 w-6 h-full rounded-sm border border-white" />
+      <div className="bg-blue-400 w-6 h-full rounded-sm border border-white" />
       <div className="bg-green-400 w-6 h-full rounded-sm border border-white" />
     </div>
   )
@@ -26,11 +26,11 @@ export function getColorByPercent(value: number, variant?: 'light' | 'dark') {
   if (value < (1 / 5) * 1)
     return variant === 'light' ? 'bg-red-600' : 'bg-red-700'
   if (value < (1 / 5) * 2)
-    return variant === 'light' ? 'bg-red-500' : 'bg-red-600'
+    return variant === 'light' ? 'bg-orange-500' : 'bg-orange-600'
   if (value < (1 / 5) * 3)
     return variant === 'light' ? 'bg-yellow-500' : 'bg-yellow-600'
   if (value < (1 / 5) * 4)
-    return variant === 'light' ? 'bg-green-600' : 'bg-green-700'
+    return variant === 'light' ? 'bg-blue-500' : 'bg-blue-600'
   return variant === 'light' ? 'bg-green-500' : 'bg-green-600'
 }
 
@@ -44,7 +44,7 @@ export default function Card({
   return (
     <div
       className={cn(
-        'w-full rounded-lg py-2 px-4 bg-red-400 text-white flex gap-4 relative justify-between items-center',
+        'w-full rounded-lg py-2 px-4  text-white flex gap-4 relative justify-between items-center',
         className
       )}
     >

@@ -124,7 +124,7 @@ export default async function Home() {
               <Card.MoreOptions href={`/task/${task.id}`} />
               <div
                 className={cn(
-                  'absolute left-0 bg-blue-400 bottom-0 rounded-tr-full -z-10',
+                  'absolute left-0 bottom-0 rounded-tr-full -z-10 shadow-black/80 shadow-2xl',
                   getColorByPercent(
                     task.totalCompletedLast7Days /
                       getTrueWeekTarget(task.createdAt, task.weeklyTarget),
