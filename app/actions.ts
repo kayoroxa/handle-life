@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { getTrueWeekTarget } from '@/lib/utils'
 import { Task, User } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { cookies } from 'next/headers'
@@ -80,7 +81,13 @@ export async function _getTask({ taskId }: { taskId: Task['id'] }) {
 
 export type _GetTasks = Awaited<ReturnType<typeof _getTasks>>
 
-export async function _getTasks({ email }: { email?: string }) {
+export async function _getTasks({
+  email,
+  getArchived,
+}: {
+  email?: string
+  getArchived?: boolean
+}) {
   const session = await getServerSession()
   email = email || session?.user?.email || undefined
 
@@ -92,6 +99,7 @@ export async function _getTasks({ email }: { email?: string }) {
       user: {
         email,
       },
+      archived: getArchived ? undefined : false,
     },
     include: {
       taskLogs: true,
@@ -130,6 +138,9 @@ export async function _getTasks({ email }: { email?: string }) {
       ...task,
       totalCompletedLast7Days,
       lastDoneDate: task.taskLogs[0]?.date || new Date(),
+      ofensiva:
+        totalCompletedLast7Days /
+        getTrueWeekTarget(task.createdAt, task.weeklyTarget),
       totalCompleted,
       percent,
     }

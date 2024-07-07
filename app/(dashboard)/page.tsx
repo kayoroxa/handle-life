@@ -1,19 +1,14 @@
 import Card, { getColorByPercent } from '@/components/myUI/card'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { cn, getDaysUntilNow, getTrueWeekTarget } from '@/lib/utils'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
+import { IoMdArchive } from 'react-icons/io'
 import { _addDoneAmountInTask, _GetTasks, _getTasks } from '../actions'
 
 function roundFloat(value: number, precision: number = 2) {
   return parseFloat(value.toFixed(precision))
-}
-
-function getDaysUntilNow(date: Date) {
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
 function brDate(date: Date): string {
@@ -21,12 +16,6 @@ function brDate(date: Date): string {
   const month = date.getMonth().toString().padStart(2, '0') // Mês com zero à esquerda, pois Janeiro é 0
   const year = date.getFullYear()
   return `${day}/${month}/${year}`
-}
-
-const getTrueWeekTarget = (taskCreatedDate: Date, taskWeeklyTarget: number) => {
-  const daysTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate)
-  if (daysTaskHasBeenCreated > 7) return taskWeeklyTarget
-  return (taskWeeklyTarget / 7) * daysTaskHasBeenCreated
 }
 
 function getLabelWeek(taskCreatedDate: Date) {
@@ -74,13 +63,24 @@ function predictCompletionDate(task: _GetTasks[number]): Date {
   return endDate
 }
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { showArchives: 'true' | 'false' }
+}) {
   const session = await getServerSession()
   const email = session?.user?.email
 
   if (!email) return <div>Email not found</div>
 
-  const tasks = await _getTasks({ email })
+  const tasks = (
+    await _getTasks({
+      email,
+      getArchived: searchParams.showArchives === 'true',
+    })
+  ).sort((a, b) => {
+    return a.ofensiva - b.ofensiva
+  })
 
   async function handleButtonsTimeClick(value: number, taskId: number) {
     'use server'
@@ -105,6 +105,19 @@ export default async function Home() {
 
           <Link href="/task/create">
             <Button>Create Habit/Task</Button>
+          </Link>
+          <Link
+            href={
+              searchParams.showArchives === 'true' ? '/' : '/?showArchives=true'
+            }
+            className={cn(
+              'ml-auto bg-primary px-3 py-2 rounded-lg hover:bg-primary/80',
+              searchParams.showArchives === 'true'
+                ? 'bg-blue-500 hover:bg-blue-600'
+                : ''
+            )}
+          >
+            <IoMdArchive className="scale-125" />
           </Link>
         </header>
 

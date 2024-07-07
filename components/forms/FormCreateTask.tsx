@@ -41,6 +41,7 @@ const formSchema = z.object({
   unitSmallLabel: z
     .string({ required_error: 'Unit small label is required.' })
     .max(10),
+  archived: z.boolean().default(false).optional(),
 })
 
 export default function FormCreateTask({
@@ -98,6 +99,9 @@ export default function FormCreateTask({
         },
         unitBigLabel: {
           description: 'Recommended: hours',
+        },
+        archived: {
+          label: 'Archive Task 📂',
         },
 
         // sendMeMails: {
