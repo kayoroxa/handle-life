@@ -129,7 +129,8 @@ export default async function Home({
                 getColorByPercent(
                   task.totalCompletedLast7Days /
                     getTrueWeekTarget(task.createdAt, task.weeklyTarget)
-                )
+                ),
+                task.archived ? 'opacity-40' : ''
               )}
             >
               {/* <div

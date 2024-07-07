@@ -115,7 +115,12 @@ export default function FormCreateTask({
       Alternatively, you can not pass a submit button
       to create auto-saving forms etc.
       */}
-      <AutoFormSubmit disabled={disabled}>{submitText}</AutoFormSubmit>
+      <AutoFormSubmit
+        disabled={disabled}
+        className="bg-green-600 hover:bg-green-700"
+      >
+        {submitText}
+      </AutoFormSubmit>
 
       {/*
       All children passed to the form will be rendered below the form.

@@ -38,7 +38,23 @@ export default async function Home({ params }: { params: { id: string } }) {
       />
       <footer className="bottom-0 right-0 absolute flex gap-8">
         <DeleteButton
-          title="Reset Progress"
+          title="Recomeçar essa task hoje"
+          onClick={async () => {
+            'use server'
+            await _modifyTask({
+              taskId: Number(params.id),
+              data: {
+                createdAt: new Date(),
+              },
+            })
+
+            revalidatePath('/')
+            redirect('/')
+          }}
+        />
+
+        <DeleteButton
+          title="Reset All Progress"
           onClick={async () => {
             'use server'
             await _cleanTaskLogs({ taskId: task.id })
