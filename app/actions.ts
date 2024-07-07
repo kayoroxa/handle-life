@@ -166,6 +166,7 @@ export async function _cleanTaskLogs({ taskId }: { taskId: Task['id'] }) {
         totalCompleted: 0,
         percent: 0,
         isDone: false,
+        createdAt: new Date(),
       },
     }),
   ])
