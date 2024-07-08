@@ -217,6 +217,7 @@ export async function _createTask({
   unitBigLabel,
   userEmail,
   additionalLink,
+  icon,
 }: {
   name: string
   projectCompletionTarget: number
@@ -226,6 +227,7 @@ export async function _createTask({
   weeklyTarget: number
   userEmail: string
   additionalLink?: string
+  icon?: string
 }) {
   const task = await prisma.task.create({
     data: {
@@ -241,6 +243,7 @@ export async function _createTask({
       },
       unitBigLabel,
       unitSmallLabel,
+      icon,
 
       // Incluir outras propriedades obrigatórias do modelo Task
       totalCompleted: 0, // ou outro valor inicial apropriado

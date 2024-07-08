@@ -50,6 +50,7 @@ model Task {
   archived                Boolean   @default(false)
   createdAt               DateTime  @default(now())
   additionalLink          String?
+  icon                    String?
 
   categories Category[] // Relacionamento para múltiplas categorias
 }

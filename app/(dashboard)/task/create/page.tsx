@@ -31,6 +31,7 @@ export default async function Home({ params }: { params: { id: string } }) {
             unitBigLabel: values.unitBigLabel,
             unitSmallLabel: values.unitSmallLabel,
             additionalLink: values.additionalLink || undefined,
+            icon: values.icon || undefined,
           })
 
           revalidatePath('/')
@@ -42,6 +43,7 @@ export default async function Home({ params }: { params: { id: string } }) {
           name: '',
           projectCompletionTarget: 1000,
           weeklyTarget: 5,
+          icon: '💲',
         }}
         submitText="Okay, Create that Task!"
       />

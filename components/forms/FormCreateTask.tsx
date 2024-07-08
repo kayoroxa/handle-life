@@ -43,6 +43,7 @@ const formSchema = z.object({
     .max(10),
   additionalLink: z.string().optional(),
   archived: z.boolean().default(false).optional(),
+  icon: z.string().optional(),
 })
 
 export default function FormCreateTask({
