@@ -80,7 +80,9 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
     if (parsedValues.success) {
       onParsedValuesChange?.(parsedValues.data)
     }
-  }, [onParsedValuesChange, onValuesChangeProp, values, formSchema])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valuesString, onParsedValuesChange, formSchema])
 
   return (
     <div className="w-full">
