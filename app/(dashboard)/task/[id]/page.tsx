@@ -1,23 +1,28 @@
 import {
   _cleanTaskLogs,
   _deleteTask,
+  _deleteTaskLog,
   _getTask,
+  _getTaskLogs,
   _modifyTask,
 } from '@/app/actions'
 import FormCreateTask from '@/components/forms/FormCreateTask'
 import DeleteButton from '@/components/myUI/delete-button'
+import ButtonIcon from '@/components/ui/button-icon'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { AiFillDelete } from 'react-icons/ai'
+import { brDate } from '../../page'
 
 export default async function Home({ params }: { params: { id: string } }) {
   const task = await _getTask({ taskId: Number(params.id) })
+  const logs = await _getTaskLogs({ taskId: Number(params.id) })
 
   if (!task) return <div>Task not found</div>
 
   return (
     <div className="p-4 flex flex-col gap-6">
       <h1>Task/Habit/Project: {task.name}</h1>
-
       <FormCreateTask
         onSubmit={async values => {
           'use server'
@@ -37,6 +42,29 @@ export default async function Home({ params }: { params: { id: string } }) {
         }}
         submitText="Okay, Edit Task!"
       />
+
+      <section className="flex flex-col gap-2 w-fit ">
+        {logs.map(log => (
+          <div
+            key={log.id}
+            className="flex bg-slate-600 gap-2 px-2 items-center"
+          >
+            <span>Date: {brDate(log.date)}</span>
+            <span>Done: {log.doneAmount}</span>
+
+            <ButtonIcon
+              onClick={async () => {
+                'use server'
+                await _deleteTaskLog({ id: log.id })
+
+                revalidatePath('/')
+              }}
+            >
+              <AiFillDelete className="fill-red-500" />
+            </ButtonIcon>
+          </div>
+        ))}
+      </section>
       <footer className="bottom-0 right-0 absolute flex gap-8">
         <DeleteButton
           title="Recomeçar essa task hoje"

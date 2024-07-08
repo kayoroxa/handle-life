@@ -11,7 +11,7 @@ function roundFloat(value: number, precision: number = 2) {
   return parseFloat(value.toFixed(precision))
 }
 
-function brDate(date: Date): string {
+export function brDate(date: Date): string {
   const day = date.getDate().toString().padStart(2, '0') // Dia com zero à esquerda, se necessário
   const month = (date.getMonth() + 1).toString().padStart(2, '0') // Mês com zero à esquerda, pois Janeiro é 0
   const year = date.getFullYear()

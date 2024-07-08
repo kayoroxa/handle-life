@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { getTrueWeekTarget } from '@/lib/utils'
-import { Task, User } from '@prisma/client'
+import { Task, TaskLog, User } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -149,6 +149,31 @@ export async function _getTasks({
   return tasksData
 }
 
+export async function _getTaskLogs({ taskId }: { taskId: Task['id'] }) {
+  return prisma.taskLog.findMany({
+    where: {
+      taskId,
+    },
+    orderBy: {
+      date: 'desc',
+    },
+
+    take: 7,
+  })
+}
+
+export async function _deleteTaskLog({ id }: { id: TaskLog['id'] }) {
+  try {
+    await prisma.taskLog.delete({
+      where: {
+        id,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function _deleteTask({ id }: { id: Task['id'] }) {
   try {
     await prisma.task.delete({
@@ -237,8 +262,6 @@ export async function _addDoneAmountInTask({
   if (number === 0) return
 
   const today = new Date()
-  const startOfDay = new Date(today.setHours(0, 0, 0, 0))
-  const endOfDay = new Date(today.setHours(23, 59, 59, 999))
 
   await prisma.task.update({
     where: { id: taskId },
@@ -249,32 +272,43 @@ export async function _addDoneAmountInTask({
     },
   })
 
-  const existingLog = await prisma.taskLog.findFirst({
-    where: {
+  await prisma.taskLog.create({
+    data: {
+      date: new Date(),
       taskId: taskId,
-      date: {
-        gte: startOfDay,
-        lte: endOfDay,
-      },
+      doneAmount: parseFloat(number.toFixed(2)),
     },
   })
 
-  if (existingLog) {
-    await prisma.taskLog.update({
-      where: { id: existingLog.id },
-      data: {
-        doneAmount: {
-          increment: number,
-        },
-      },
-    })
-  } else {
-    await prisma.taskLog.create({
-      data: {
-        date: new Date(),
-        taskId: taskId,
-        doneAmount: parseFloat(number.toFixed(2)),
-      },
-    })
-  }
+  // const startOfDay = new Date(today.setHours(0, 0, 0, 0))
+  // const endOfDay = new Date(today.setHours(23, 59, 59, 999))
+
+  // const existingLog = await prisma.taskLog.findFirst({
+  //   where: {
+  //     taskId: taskId,
+  //     date: {
+  //       gte: startOfDay,
+  //       lte: endOfDay,
+  //     },
+  //   },
+  // })
+
+  // if (existingLog) {
+  //   await prisma.taskLog.update({
+  //     where: { id: existingLog.id },
+  //     data: {
+  //       doneAmount: {
+  //         increment: number,
+  //       },
+  //     },
+  //   })
+  // } else {
+  //   await prisma.taskLog.create({
+  //     data: {
+  //       date: new Date(),
+  //       taskId: taskId,
+  //       doneAmount: parseFloat(number.toFixed(2)),
+  //     },
+  //   })
+  // }
 }
