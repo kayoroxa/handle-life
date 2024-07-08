@@ -8,8 +8,10 @@
     "start": "next start -p 6700",
     "lint": "next lint",
     "check": "tsc --pretty --noEmit",
-    "p1": "prisma migrate dev --name change",
-    "p2": "prisma generate"
+    "p1": "prisma migrate dev",
+    "p2": "prisma generate",
+    "pp": "prisma migrate dev --name change && prisma generate",
+    "spb": "git pull origin master && prisma migrate dev --name change && prisma generate && next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.8.0",
