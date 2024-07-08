@@ -2,12 +2,12 @@ function AutoFormTooltip({ fieldConfigItem }: { fieldConfigItem: any }) {
   return (
     <>
       {fieldConfigItem?.description && (
-        <p className="text-sm text-gray-500 dark:text-white">
+        <div className="text-sm text-gray-500 dark:text-white">
           {fieldConfigItem.description}
-        </p>
+        </div>
       )}
     </>
-  );
+  )
 }
 
-export default AutoFormTooltip;
+export default AutoFormTooltip

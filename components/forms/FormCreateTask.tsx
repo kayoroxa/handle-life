@@ -41,6 +41,7 @@ const formSchema = z.object({
   unitSmallLabel: z
     .string({ required_error: 'Unit small label is required.' })
     .max(10),
+  additionalLink: z.string().optional(),
   archived: z.boolean().default(false).optional(),
 })
 
@@ -102,6 +103,10 @@ export default function FormCreateTask({
         },
         archived: {
           label: 'Archive Task 📂',
+        },
+        additionalLink: {
+          label: 'Additional Link (Optional)',
+          description: 'Exemplo: link notion, docs, etc...',
         },
 
         // sendMeMails: {

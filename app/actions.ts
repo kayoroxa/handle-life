@@ -191,6 +191,7 @@ export async function _createTask({
   unitSmallLabel,
   unitBigLabel,
   userEmail,
+  additionalLink,
 }: {
   name: string
   projectCompletionTarget: number
@@ -199,6 +200,7 @@ export async function _createTask({
   unitBigLabel?: string
   weeklyTarget: number
   userEmail: string
+  additionalLink?: string
 }) {
   const task = await prisma.task.create({
     data: {
@@ -206,7 +208,7 @@ export async function _createTask({
       percent,
       weeklyTarget,
       projectCompletionTarget,
-
+      additionalLink,
       user: {
         connect: {
           email: userEmail,

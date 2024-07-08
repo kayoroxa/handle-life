@@ -30,6 +30,7 @@ export default async function Home({ params }: { params: { id: string } }) {
             userEmail: email,
             unitBigLabel: values.unitBigLabel,
             unitSmallLabel: values.unitSmallLabel,
+            additionalLink: values.additionalLink || undefined,
           })
 
           revalidatePath('/')

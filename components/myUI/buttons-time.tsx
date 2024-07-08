@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { IoIosMore } from 'react-icons/io'
+import { IoIosMore, IoMdLink } from 'react-icons/io'
 
 interface IProps {
   data: {
@@ -35,6 +35,18 @@ export function MoreOptions({ href }: { href: string }) {
       className=" flex items-center justify-center hover:bg-black/10 rounded-full w-10 h-10"
     >
       <IoIosMore className="hover:cursor-pointer" />
+    </Link>
+  )
+}
+
+export function UrlButton({ href }: { href: string }) {
+  return (
+    <Link
+      href={`${href}`}
+      target="_blank"
+      className=" flex items-center justify-center hover:bg-black/10 rounded-full w-10 h-10"
+    >
+      <IoMdLink className="hover:cursor-pointer" />
     </Link>
   )
 }

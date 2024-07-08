@@ -13,7 +13,7 @@ function roundFloat(value: number, precision: number = 2) {
 
 function brDate(date: Date): string {
   const day = date.getDate().toString().padStart(2, '0') // Dia com zero à esquerda, se necessário
-  const month = date.getMonth().toString().padStart(2, '0') // Mês com zero à esquerda, pois Janeiro é 0
+  const month = (date.getMonth() + 1).toString().padStart(2, '0') // Mês com zero à esquerda, pois Janeiro é 0
   const year = date.getFullYear()
   return `${day}/${month}/${year}`
 }
@@ -176,6 +176,9 @@ export default async function Home({
                 </h1>
               </div>
               <section className="ml-auto flex gap-2 items-center">
+                {task.additionalLink && (
+                  <Card.UrlButton href={task.additionalLink} />
+                )}
                 <div>{brDate(predictCompletionDate(task))}</div>
                 <Card.MoreOptions href={`/task/${task.id}`} />
               </section>

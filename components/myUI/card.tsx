@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { ButtonsTime, MoreOptions } from './buttons-time'
+import { ButtonsTime, MoreOptions, UrlButton } from './buttons-time'
 
 function Button({ children }: { children: React.ReactNode }) {
   return <button className="">{children}</button>
@@ -82,3 +82,4 @@ export default function Card({
 Card.Velocity = Velocity
 Card.ButtonsTime = ButtonsTime
 Card.MoreOptions = MoreOptions
+Card.UrlButton = UrlButton

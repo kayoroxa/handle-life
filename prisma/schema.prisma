@@ -49,6 +49,7 @@ model Task {
   notes                   String?
   archived                Boolean   @default(false)
   createdAt               DateTime  @default(now())
+  additionalLink          String?
 
   categories Category[] // Relacionamento para múltiplas categorias
 }
