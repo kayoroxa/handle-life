@@ -39,6 +39,7 @@ export default async function Home({ params }: { params: { id: string } }) {
           unitSmallLabel: task.unitSmallLabel,
           archived: task.archived,
           additionalLink: task.additionalLink || undefined,
+          icon: task.icon || undefined,
         }}
         submitText="Okay, Edit Task!"
       />
