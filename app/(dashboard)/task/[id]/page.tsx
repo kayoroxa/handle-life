@@ -9,10 +9,10 @@ import {
 import FormCreateTask from '@/components/forms/FormCreateTask'
 import DeleteButton from '@/components/myUI/delete-button'
 import ButtonIcon from '@/components/ui/button-icon'
+import { brDate } from '@/lib/utils'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { AiFillDelete } from 'react-icons/ai'
-import { brDate } from '../../page'
 
 export default async function Home({ params }: { params: { id: string } }) {
   const task = await _getTask({ taskId: Number(params.id) })

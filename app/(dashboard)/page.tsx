@@ -1,6 +1,6 @@
 import Card, { getColorByPercent } from '@/components/myUI/card'
 import { Button } from '@/components/ui/button'
-import { cn, getDaysUntilNow, getTrueWeekTarget } from '@/lib/utils'
+import { brDate, cn, getDaysUntilNow, getTrueWeekTarget } from '@/lib/utils'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
@@ -9,13 +9,6 @@ import { _addDoneAmountInTask, _GetTasks, _getTasks } from '../actions'
 
 function roundFloat(value: number, precision: number = 2) {
   return parseFloat(value.toFixed(precision))
-}
-
-export function brDate(date: Date): string {
-  const day = date.getDate().toString().padStart(2, '0') // Dia com zero à esquerda, se necessário
-  const month = (date.getMonth() + 1).toString().padStart(2, '0') // Mês com zero à esquerda, pois Janeiro é 0
-  const year = date.getFullYear()
-  return `${day}/${month}/${year}`
 }
 
 function getLabelWeek(taskCreatedDate: Date) {
