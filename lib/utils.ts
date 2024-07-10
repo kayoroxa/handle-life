@@ -19,6 +19,36 @@ export function getDaysUntilNow(date: Date) {
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
+export function formatDateDiff(targetDate: Date): string {
+  const currentDate = new Date()
+  const diffInMilliseconds = targetDate.getTime() - currentDate.getTime()
+  const diffInDays = Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24))
+
+  if (diffInDays <= 0) {
+    return 'Date has passed'
+  }
+
+  const years = Math.floor(diffInDays / 365)
+  const months = Math.floor((diffInDays % 365) / 30)
+  const days = diffInDays % 30
+
+  let result = ''
+  if (years > 0) {
+    result += `${years} y${years > 1 ? '' : ''}`
+    if (months > 0) result += ' '
+  }
+  if (months > 0) {
+    result += `${months} month${months > 1 ? 's' : ''}`
+    if (days > 0) result += ' '
+  }
+  if (days > 0 && years === 0 && months === 0) {
+    result += `${days} day${days > 1 ? 's' : ''}`
+  }
+
+  result += ' left'
+  return result
+}
+
 export const getTrueWeekTarget = (
   taskCreatedDate: Date,
   taskWeeklyTarget: number

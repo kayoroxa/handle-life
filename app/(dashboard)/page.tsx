@@ -1,6 +1,11 @@
 import Card, { getColorByPercent } from '@/components/myUI/card'
 import { Button } from '@/components/ui/button'
-import { brDate, cn, getDaysUntilNow, getTrueWeekTarget } from '@/lib/utils'
+import {
+  cn,
+  formatDateDiff,
+  getDaysUntilNow,
+  getTrueWeekTarget,
+} from '@/lib/utils'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
 import Link from 'next/link'
@@ -169,10 +174,12 @@ export default async function Home({
                 </h1>
               </div>
               <section className="ml-auto flex gap-2 items-center">
-                {task.additionalLink && (
-                  <Card.UrlButton href={task.additionalLink} />
-                )}
-                <div>{brDate(predictCompletionDate(task))}</div>
+                <div>{formatDateDiff(predictCompletionDate(task))}</div>
+                <div className="w-6">
+                  {task.additionalLink && (
+                    <Card.UrlButton href={task.additionalLink} />
+                  )}
+                </div>
                 <Card.MoreOptions href={`/task/${task.id}`} />
               </section>
               <div
