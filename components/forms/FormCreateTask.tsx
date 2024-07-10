@@ -1,5 +1,6 @@
 'use client'
 import AutoForm, { AutoFormSubmit } from '@/components/ui/auto-form'
+import { formatDateDiff, predictCompletionDate } from '@/lib/utils'
 import { useState } from 'react'
 import * as z from 'zod'
 
@@ -91,6 +92,19 @@ export default function FormCreateTask({
               <p className="text-gray-400 text-sm">
                 or: {Math.round((stateValues.weeklyTarget / 7) * 60)} min per
                 day
+              </p>
+              <p>
+                <span>Complete in </span>
+                <span className="text-gray-400">
+                  {formatDateDiff(
+                    predictCompletionDate({
+                      projectCompletionTarget:
+                        stateValues.projectCompletionTarget || 0,
+                      weeklyTarget: stateValues.weeklyTarget || 0,
+                      totalCompleted: 0,
+                    })
+                  )}
+                </span>
               </p>
             </div>
           ),

@@ -45,8 +45,33 @@ export function formatDateDiff(targetDate: Date): string {
     result += `${days} day${days > 1 ? 's' : ''}`
   }
 
-  result += ' left'
+  // result += ' left'
   return result
+}
+
+export function predictCompletionDate({
+  projectCompletionTarget,
+  weeklyTarget,
+  totalCompleted,
+}: {
+  totalCompleted: number
+  projectCompletionTarget: number
+  weeklyTarget: number
+}) {
+  const today = new Date()
+
+  const trabalhoRestante = projectCompletionTarget - totalCompleted
+  if (trabalhoRestante <= 0) {
+    return today // Retorna a data de hoje se a meta já foi atingida
+  }
+
+  const howManyWeeks = trabalhoRestante / weeklyTarget
+
+  // Calcula a data estimada de conclusão adicionando o número de semanas necessárias
+  const endDate = new Date(
+    today.getTime() + howManyWeeks * 7 * 24 * 60 * 60 * 1000
+  )
+  return endDate
 }
 
 export const getTrueWeekTarget = (

@@ -1,10 +1,14 @@
+import { IoCalendarNumberOutline } from 'react-icons/io5'
+
 import Card, { getColorByPercent } from '@/components/myUI/card'
 import { Button } from '@/components/ui/button'
 import {
+  brDate,
   cn,
   formatDateDiff,
   getDaysUntilNow,
   getTrueWeekTarget,
+  predictCompletionDate,
 } from '@/lib/utils'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
@@ -43,28 +47,20 @@ function getWeeklyText(task: _GetTasks[number]) {
   return `${today} / ${target} ${task.unitBigLabel.toLowerCase()}`
 }
 
-function predictCompletionDate(task: _GetTasks[number]): Date {
-  const today = new Date()
-
-  const trabalhoRestante = task.projectCompletionTarget - task.totalCompleted
-  if (trabalhoRestante <= 0) {
-    return today // Retorna a data de hoje se a meta já foi atingida
-  }
-
-  const weeklyTarget = task.weeklyTarget
-  const howManyWeeks = trabalhoRestante / weeklyTarget
-
-  // Calcula a data estimada de conclusão adicionando o número de semanas necessárias
-  const endDate = new Date(
-    today.getTime() + howManyWeeks * 7 * 24 * 60 * 60 * 1000
+function getLeftDays(task: _GetTasks[number]) {
+  return formatDateDiff(
+    predictCompletionDate({
+      projectCompletionTarget: task.projectCompletionTarget,
+      totalCompleted: task.totalCompleted,
+      weeklyTarget: task.weeklyTarget,
+    })
   )
-  return endDate
 }
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { showArchives: 'true' | 'false' }
+  searchParams: { showArchives: 'true' | 'false'; rawDate: 'true' | 'false' }
 }) {
   const session = await getServerSession()
   const email = session?.user?.email
@@ -104,19 +100,35 @@ export default async function Home({
           <Link href="/task/create">
             <Button>Create Habit/Task</Button>
           </Link>
-          <Link
-            href={
-              searchParams.showArchives === 'true' ? '/' : '/?showArchives=true'
-            }
-            className={cn(
-              'ml-auto bg-primary px-3 py-2 rounded-lg hover:bg-primary/80',
-              searchParams.showArchives === 'true'
-                ? 'bg-blue-500 hover:bg-blue-600'
-                : ''
-            )}
-          >
-            <IoMdArchive className="scale-125" />
-          </Link>
+          <aside className="ml-auto flex gap-4">
+            <Link
+              href={searchParams.rawDate === 'true' ? '/' : '/?rawDate=true'}
+              className={cn(
+                'bg-primary px-3 py-2 rounded-lg hover:bg-primary/80',
+                searchParams.rawDate === 'true'
+                  ? 'bg-blue-500 hover:bg-blue-600'
+                  : ''
+              )}
+            >
+              <IoCalendarNumberOutline className="scale-125" />
+            </Link>
+
+            <Link
+              href={
+                searchParams.showArchives === 'true'
+                  ? '/'
+                  : '/?showArchives=true'
+              }
+              className={cn(
+                'bg-primary px-3 py-2 rounded-lg hover:bg-primary/80',
+                searchParams.showArchives === 'true'
+                  ? 'bg-blue-500 hover:bg-blue-600'
+                  : ''
+              )}
+            >
+              <IoMdArchive className="scale-125" />
+            </Link>
+          </aside>
         </header>
 
         {tasks.map(task => (
@@ -174,7 +186,11 @@ export default async function Home({
                 </h1>
               </div>
               <section className="ml-auto flex gap-2 items-center">
-                <div>{formatDateDiff(predictCompletionDate(task))}</div>
+                {searchParams.rawDate === 'true' ? (
+                  <span>{brDate(predictCompletionDate(task))}</span>
+                ) : (
+                  <span>{getLeftDays(task)} left</span>
+                )}
                 <div className="w-6">
                   {task.additionalLink && (
                     <Card.UrlButton href={task.additionalLink} />
