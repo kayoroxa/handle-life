@@ -22,7 +22,49 @@ export default async function Home({ params }: { params: { id: string } }) {
 
   return (
     <div className="p-4 flex flex-col gap-6">
-      <h1>Task/Habit/Project: {task.name}</h1>
+      <header className="flex">
+        <h1 className="text-3xl">Task/Habit/Project: {task.name}</h1>
+        <aside className="ml-auto flex gap-4">
+          <DeleteButton
+            title="Recomeçar essa task hoje"
+            onClick={async () => {
+              'use server'
+              await _modifyTask({
+                taskId: Number(params.id),
+                data: {
+                  createdAt: new Date(),
+                },
+              })
+
+              revalidatePath('/')
+              redirect('/')
+            }}
+          />
+
+          <DeleteButton
+            title="Reset All Progress"
+            onClick={async () => {
+              'use server'
+              await _cleanTaskLogs({ taskId: task.id })
+              revalidatePath('/')
+              redirect('/')
+            }}
+          />
+
+          <DeleteButton
+            title="Delete Task"
+            onClick={async () => {
+              'use server'
+              await _deleteTask({ id: task.id })
+              revalidatePath('/')
+              redirect('/')
+            }}
+          >
+            <AiFillDelete className="fill-white" size={20} />
+          </DeleteButton>
+        </aside>
+      </header>
+
       <FormCreateTask
         onSubmit={async values => {
           'use server'
@@ -44,65 +86,43 @@ export default async function Home({ params }: { params: { id: string } }) {
         submitText="Okay, Edit Task!"
       />
 
-      <section className="flex flex-col gap-2 w-fit ">
-        {logs.map(log => (
-          <div
-            key={log.id}
-            className="flex bg-slate-600 gap-2 px-2 items-center"
-          >
-            <span>Date: {brDate(log.date)}</span>
-            <span>Done: {log.doneAmount}</span>
+      <table className="table-auto w-fit">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Done</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {logs.map(log => (
+            <tr key={log.id} className=" bg-slate-600">
+              <th className="py-3 px-4 font-normal">
+                {brDate(log.date, true)}
+              </th>
+              <th className="py-3 px-4 font-normal">
+                {task.unitSmallLabel.toLowerCase() === 'min'
+                  ? Math.round(log.doneAmount * 60) + ' min'
+                  : log.doneAmount}
+              </th>
 
-            <ButtonIcon
-              onClick={async () => {
-                'use server'
-                await _deleteTaskLog({ id: log.id })
+              <th className="py-3 px-4 ">
+                <ButtonIcon
+                  onClick={async () => {
+                    'use server'
+                    await _deleteTaskLog({ id: log.id })
 
-                revalidatePath('/')
-              }}
-            >
-              <AiFillDelete className="fill-red-500" />
-            </ButtonIcon>
-          </div>
-        ))}
-      </section>
-      <footer className="bottom-0 right-0 absolute flex gap-8">
-        <DeleteButton
-          title="Recomeçar essa task hoje"
-          onClick={async () => {
-            'use server'
-            await _modifyTask({
-              taskId: Number(params.id),
-              data: {
-                createdAt: new Date(),
-              },
-            })
-
-            revalidatePath('/')
-            redirect('/')
-          }}
-        />
-
-        <DeleteButton
-          title="Reset All Progress"
-          onClick={async () => {
-            'use server'
-            await _cleanTaskLogs({ taskId: task.id })
-            revalidatePath('/')
-            redirect('/')
-          }}
-        />
-
-        <DeleteButton
-          title="Delete Task"
-          onClick={async () => {
-            'use server'
-            await _deleteTask({ id: task.id })
-            revalidatePath('/')
-            redirect('/')
-          }}
-        />
-      </footer>
+                    revalidatePath('/')
+                  }}
+                >
+                  <AiFillDelete className="fill-red-500" size={20} />
+                </ButtonIcon>
+              </th>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <footer className="bottom-0 right-0 fixed p-4 flex gap-8"></footer>
     </div>
   )
 }

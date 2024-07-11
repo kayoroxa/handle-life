@@ -7,9 +7,11 @@ import { useState } from 'react'
 export default function DeleteButton({
   onClick,
   title,
+  children,
 }: {
   onClick: () => void
   title?: string
+  children?: React.ReactNode
 }) {
   const [countClick, setCountClick] = useState(0)
   return countClick < 2 ? (
@@ -27,6 +29,7 @@ export default function DeleteButton({
     >
       {countClick == 0 && (title || 'Delete')}
       {countClick == 1 && `Click again to ${title || 'Delete'}`}
+      <div className="ml-2">{children}</div>
     </Button>
   ) : (
     <div className="">Okay, Carregando!</div>
