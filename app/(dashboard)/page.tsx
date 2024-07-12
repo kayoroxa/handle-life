@@ -7,6 +7,7 @@ import {
   cn,
   formatDateDiff,
   getDaysUntilNow,
+  getPercentVelocity,
   getTrueWeekTarget,
   predictCompletionDate,
 } from '@/lib/utils'
@@ -136,10 +137,7 @@ export default async function Home({
             <Card
               className={cn(
                 'z-10',
-                getColorByPercent(
-                  task.totalCompletedLast7Days /
-                    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
-                ),
+                getColorByPercent(getPercentVelocity(task)),
                 task.archived ? 'opacity-40' : ''
               )}
             >
@@ -157,12 +155,7 @@ export default async function Home({
               <section className="flex flex-col gap-1">
                 <h2 className="w-48 max-w-48 text-ellipsis">{task.name}</h2>
 
-                <Card.Velocity
-                  percent={
-                    task.totalCompletedLast7Days /
-                    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
-                  }
-                />
+                <Card.Velocity percent={getPercentVelocity(task)} />
               </section>
               <Card.ButtonsTime
                 data={{
@@ -201,11 +194,7 @@ export default async function Home({
               <div
                 className={cn(
                   'absolute left-0 bottom-0 rounded-tr-full -z-10 shadow-black/80 shadow-2xl',
-                  getColorByPercent(
-                    task.totalCompletedLast7Days /
-                      getTrueWeekTarget(task.createdAt, task.weeklyTarget),
-                    'light'
-                  )
+                  getColorByPercent(getPercentVelocity(task), 'light')
                 )}
                 style={{ width: 100 * task.percent + '%' }}
               >

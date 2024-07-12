@@ -45,6 +45,7 @@ const formSchema = z.object({
   additionalLink: z.string().optional(),
   archived: z.boolean().default(false).optional(),
   icon: z.string().optional(),
+  isBad: z.boolean().default(false).optional(),
 })
 
 export default function FormCreateTask({
@@ -123,7 +124,9 @@ export default function FormCreateTask({
           label: 'Additional Link (Optional)',
           description: 'Exemplo: link notion, docs, etc...',
         },
-
+        isBad: {
+          label: 'Is this task bad? 🚫',
+        },
         // sendMeMails: {
         //   // Booleans use a checkbox by default, you can use a switch instead
         //   fieldType: 'switch',

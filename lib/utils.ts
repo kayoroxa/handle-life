@@ -1,3 +1,4 @@
+import { _GetTasks } from '@/app/actions'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -17,6 +18,20 @@ export function brDate(date: Date, hours = false): string {
   const minute = date.getMinutes().toString().padStart(2, '0')
 
   return `${day}/${month}/${year} - ${hour}:${minute}`
+}
+
+export function getPercentVelocity(task: _GetTasks[number]) {
+  if (task.isBad) {
+    return (
+      getTrueWeekTarget(task.createdAt, task.weeklyTarget) /
+      task.totalCompletedLast7Days
+    )
+  }
+
+  return (
+    task.totalCompletedLast7Days /
+    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
+  )
 }
 
 export function getDaysUntilNow(date: Date) {

@@ -51,6 +51,7 @@ model Task {
   createdAt               DateTime  @default(now())
   additionalLink          String?
   icon                    String?
+  isBad                   Boolean   @default(false)
 
   categories Category[] // Relacionamento para múltiplas categorias
 }

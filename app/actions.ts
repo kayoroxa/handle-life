@@ -1,7 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { getTrueWeekTarget } from '@/lib/utils'
+import { getPercentVelocity, getTrueWeekTarget } from '@/lib/utils'
 import { Task, TaskLog, User } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { cookies } from 'next/headers'
@@ -134,7 +134,7 @@ export async function _getTasks({
 
     const percent = totalCompleted / task.projectCompletionTarget
 
-    return {
+    const newTask = {
       ...task,
       totalCompletedLast7Days,
       lastDoneDate: task.taskLogs[0]?.date || new Date(),
@@ -144,6 +144,10 @@ export async function _getTasks({
       totalCompleted,
       percent,
     }
+
+    newTask.ofensiva = getPercentVelocity(newTask)
+
+    return newTask
   })
 
   return tasksData
@@ -218,6 +222,7 @@ export async function _createTask({
   userEmail,
   additionalLink,
   icon,
+  isBad,
 }: {
   name: string
   projectCompletionTarget: number
@@ -228,6 +233,7 @@ export async function _createTask({
   userEmail: string
   additionalLink?: string
   icon?: string
+  isBad?: boolean
 }) {
   const task = await prisma.task.create({
     data: {
@@ -244,6 +250,7 @@ export async function _createTask({
       unitBigLabel,
       unitSmallLabel,
       icon,
+      isBad,
 
       // Incluir outras propriedades obrigatórias do modelo Task
       totalCompleted: 0, // ou outro valor inicial apropriado
