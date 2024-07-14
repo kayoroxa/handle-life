@@ -34,9 +34,15 @@ export function getPercentVelocity(task: _GetTasks[number]) {
   )
 }
 
-export function getDaysUntilNow(date: Date) {
+export function getDaysUntilNow(
+  date: Date,
+  { second = false }: { second?: boolean } = {}
+) {
   const now = new Date()
   const diff = now.getTime() - date.getTime()
+
+  if (second) return Math.ceil(diff / 1000)
+
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
@@ -101,5 +107,10 @@ export const getTrueWeekTarget = (
 ) => {
   const daysTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate)
   if (daysTaskHasBeenCreated > 7) return taskWeeklyTarget
-  return (taskWeeklyTarget / 7) * daysTaskHasBeenCreated
+  const secondsTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate, {
+    second: true,
+  })
+  const sevenDaysInSec = 7 * 24 * 60 * 60
+  return (taskWeeklyTarget / sevenDaysInSec) * secondsTaskHasBeenCreated
+  // return (taskWeeklyTarget / 7) * daysTaskHasBeenCreated
 }

@@ -91,7 +91,7 @@ export async function _getTasks({
   const session = await getServerSession()
   email = email || session?.user?.email || undefined
 
-  const sevenDaysAgo = new Date()
+  let sevenDaysAgo = new Date()
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
 
   let tasks = await prisma.task.findMany({
@@ -115,6 +115,9 @@ export async function _getTasks({
 
   const getTotalCompletedLast7Days = (task: (typeof tasks)[0]) => {
     const lastLogs7Days = task.taskLogs.filter(log => {
+      if (sevenDaysAgo < task.createdAt) {
+        return log.date >= task.createdAt
+      }
       return log.date >= sevenDaysAgo
     })
     const taskCompletedLast7Days = lastLogs7Days.reduce((taskSum, log) => {
