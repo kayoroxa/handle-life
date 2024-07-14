@@ -168,17 +168,25 @@ export default async function Home({
                   },
                 }}
               />
-              <div className="flex flex-col w-32">
-                <h1>{getLabelWeek(task.createdAt)}:</h1>
-                <h1>{getWeeklyText(task)}</h1>
-              </div>
-              <div className="flex flex-col ml-4">
-                <h1>total:</h1>
-                <h1>
-                  {roundFloat(task.totalCompleted)} /{' '}
-                  {roundFloat(task.projectCompletionTarget)}
-                </h1>
-              </div>
+              <table className="">
+                <thead>
+                  <tr className="text-left">
+                    <th className="w-[170px]">
+                      {getLabelWeek(task.createdAt)}:
+                    </th>
+                    <th className="w-[170px]">total:</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{getWeeklyText(task)}</td>
+                    <td>
+                      {roundFloat(task.totalCompleted)} /{' '}
+                      {roundFloat(task.projectCompletionTarget)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
               <section className="ml-auto flex gap-2 items-center">
                 {searchParams.rawDate === 'true' ? (
                   <span>{brDate(predictCompletionDate(task))}</span>
