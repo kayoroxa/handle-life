@@ -31,14 +31,15 @@ function getLabelWeek(taskCreatedDate: Date) {
 function getWeeklyText(task: _GetTasks[number]) {
   const today = roundFloat(task.totalCompletedLast7Days)
   const target = roundFloat(
-    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
+    getTrueWeekTarget(task.createdAt, task.weeklyTarget),
+    2
   )
 
   if (
     task.unitSmallLabel.toLowerCase() === 'min' &&
     (today < 1 || target < 1)
   ) {
-    return `${Math.round(today * 60)} / ${Math.round(target * 60)} min`
+    return `${roundFloat(today * 60, 0)} / ${roundFloat(target * 60, 0)} min`
   }
 
   if (task.unitSmallLabel.toLowerCase() === 'min') {
@@ -167,7 +168,7 @@ export default async function Home({
                   },
                 }}
               />
-              <div className="flex flex-col ">
+              <div className="flex flex-col w-32">
                 <h1>{getLabelWeek(task.createdAt)}:</h1>
                 <h1>{getWeeklyText(task)}</h1>
               </div>
