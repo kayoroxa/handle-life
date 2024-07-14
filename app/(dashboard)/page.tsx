@@ -149,7 +149,7 @@ export default async function Home({
               }}
             ></div> */}
 
-              <section className="flex flex-col w-10">
+              <section className="flex flex-col w-12">
                 <div>{task.icon || ''}</div>
                 <h3>{roundFloat(task.percent * 100)}%</h3>
               </section>
@@ -169,15 +169,15 @@ export default async function Home({
                 }}
               />
               <table className="">
-                <thead>
+                <thead className="text-base">
                   <tr className="text-left">
-                    <th className="w-[170px]">
+                    <th className="w-[170px] font-medium">
                       {getLabelWeek(task.createdAt)}:
                     </th>
-                    <th className="w-[170px]">total:</th>
+                    <th className="w-[170px] font-medium">total:</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-sm">
                   <tr>
                     <td>{getWeeklyText(task)}</td>
                     <td>
