@@ -160,7 +160,7 @@ export default async function Home({
               </section>
               <Card.ButtonsTime
                 data={{
-                  values: [2, 5, 10, 15, 30, 60],
+                  values: [1, 2, 3, 4, 5, 10, 15, 30],
                   label: task.unitSmallLabel,
                   onClick: async (value: number) => {
                     'use server'
