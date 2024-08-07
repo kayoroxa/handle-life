@@ -1,7 +1,11 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { getPercentVelocity, getTrueWeekTarget } from '@/lib/utils'
+import {
+  getDaysUntilNow,
+  getPercentVelocity,
+  getTrueWeekTarget,
+} from '@/lib/utils'
 import { Task, TaskLog, User } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { cookies } from 'next/headers'
@@ -91,9 +95,6 @@ export async function _getTasks({
   const session = await getServerSession()
   email = email || session?.user?.email || undefined
 
-  let sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-
   let tasks = await prisma.task.findMany({
     where: {
       user: {
@@ -113,17 +114,32 @@ export async function _getTasks({
     },
   })
 
-  const getTotalCompletedLast7Days = (task: (typeof tasks)[0]) => {
+  const getTotalCompletedLastHistoryDays = (task: (typeof tasks)[0]) => {
+    const historyDays =
+      task.historyDays === 0
+        ? getDaysUntilNow(task.createdAt)
+        : task.historyDays // "7 days"
+
+    // if (task.historyDays > 7) debugger
+
+    console.log('historyDays', historyDays)
+
+    let sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - historyDays)
+
     const lastLogs7Days = task.taskLogs.filter(log => {
       if (sevenDaysAgo < task.createdAt) {
         return log.date >= task.createdAt
       }
       return log.date >= sevenDaysAgo
     })
-    const taskCompletedLast7Days = lastLogs7Days.reduce((taskSum, log) => {
-      return taskSum + log.doneAmount // Supondo que há um campo `doneAmount` no TaskLog para indicar o progresso diário
-    }, 0)
-    return taskCompletedLast7Days
+    const taskCompletedLastHistoryDays = lastLogs7Days.reduce(
+      (taskSum, log) => {
+        return taskSum + log.doneAmount // Supondo que há um campo `doneAmount` no TaskLog para indicar o progresso diário
+      },
+      0
+    )
+    return taskCompletedLastHistoryDays
   }
 
   const tasksData = tasks.map(task => {
@@ -131,20 +147,24 @@ export async function _getTasks({
       return taskSum + log.doneAmount
     }, 0)
 
-    const totalCompletedLast7Days = parseFloat(
-      getTotalCompletedLast7Days(task).toFixed(2)
+    const totalCompletedLastHistoryDays = parseFloat(
+      getTotalCompletedLastHistoryDays(task).toFixed(2)
     )
 
     const percent = totalCompleted / task.projectCompletionTarget
 
     const newTask = {
       ...task,
-      totalCompletedLast7Days,
+      totalCompletedLastHistoryDays,
       lastDoneDate: task.taskLogs[0]?.date || new Date(),
       ofensiva:
-        totalCompletedLast7Days /
-        getTrueWeekTarget(task.createdAt, task.weeklyTarget),
+        totalCompletedLastHistoryDays /
+        getTrueWeekTarget(task.createdAt, task.weeklyTarget, task.historyDays),
       totalCompleted,
+      historyDays:
+        task.historyDays === 0
+          ? getDaysUntilNow(task.createdAt)
+          : task.historyDays,
       percent,
     }
 
@@ -165,7 +185,7 @@ export async function _getTaskLogs({ taskId }: { taskId: Task['id'] }) {
       date: 'desc',
     },
 
-    take: 7,
+    take: 10,
   })
 }
 
@@ -225,6 +245,7 @@ export async function _createTask({
   userEmail,
   additionalLink,
   icon,
+  historyDays,
   isBad,
 }: {
   name: string
@@ -233,6 +254,7 @@ export async function _createTask({
   unitSmallLabel?: string
   unitBigLabel?: string
   weeklyTarget: number
+  historyDays: number
   userEmail: string
   additionalLink?: string
   icon?: string
@@ -243,6 +265,7 @@ export async function _createTask({
       name,
       percent,
       weeklyTarget,
+      historyDays,
       projectCompletionTarget,
       additionalLink,
       user: {

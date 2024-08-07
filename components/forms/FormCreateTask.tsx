@@ -36,6 +36,7 @@ const formSchema = z.object({
   weeklyTarget: z.coerce.number({
     required_error: 'Weekly target is required.',
   }),
+  historyDays: z.coerce.number({ required_error: 'History days is required.' }),
   unitBigLabel: z
     .string({ required_error: 'Unit big label is required.' })
     .max(10),
@@ -110,6 +111,18 @@ export default function FormCreateTask({
             </div>
           ),
         },
+        historyDays: {
+          label: 'History days (LAST X DAYS)',
+          description: (
+            <div>
+              Number of days to display the task completion history. Exemple:
+              last 7 days.{' '}
+              <b className="text-yellow-300/30">
+                (If you put 0 it will show all days.)
+              </b>
+            </div>
+          ),
+        },
         unitSmallLabel: {
           label: 'Unit small label (Label to show in buttons actions)',
           description: 'Recommended: min',
@@ -127,6 +140,7 @@ export default function FormCreateTask({
         isBad: {
           label: 'Is this task bad? 🚫',
         },
+
         // sendMeMails: {
         //   // Booleans use a checkbox by default, you can use a switch instead
         //   fieldType: 'switch',

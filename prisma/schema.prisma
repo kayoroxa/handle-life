@@ -52,6 +52,7 @@ model Task {
   additionalLink          String?
   icon                    String?
   isBad                   Boolean   @default(false)
+  historyDays             Int       @default(7) // last 7 days
 
   categories Category[] // Relacionamento para múltiplas categorias
 }

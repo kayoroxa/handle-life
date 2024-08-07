@@ -23,14 +23,14 @@ export function brDate(date: Date, hours = false): string {
 export function getPercentVelocity(task: _GetTasks[number]) {
   if (task.isBad) {
     return (
-      getTrueWeekTarget(task.createdAt, task.weeklyTarget) /
-      task.totalCompletedLast7Days
+      getTrueWeekTarget(task.createdAt, task.weeklyTarget, task.historyDays) /
+      task.totalCompletedLastHistoryDays
     )
   }
 
   return (
-    task.totalCompletedLast7Days /
-    getTrueWeekTarget(task.createdAt, task.weeklyTarget)
+    task.totalCompletedLastHistoryDays /
+    getTrueWeekTarget(task.createdAt, task.weeklyTarget, task.historyDays)
   )
 }
 
@@ -103,14 +103,20 @@ export function predictCompletionDate({
 
 export const getTrueWeekTarget = (
   taskCreatedDate: Date,
-  taskWeeklyTarget: number
+  taskWeeklyTarget: number,
+  historyDays: number
 ) => {
+  //historyDays "last (7) days"
+  const targetPerDay = taskWeeklyTarget / 7
   const daysTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate)
-  if (daysTaskHasBeenCreated > 7) return taskWeeklyTarget
+  if (daysTaskHasBeenCreated > historyDays) {
+    return targetPerDay * historyDays
+  }
   const secondsTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate, {
     second: true,
   })
-  const sevenDaysInSec = 7 * 24 * 60 * 60
-  return (taskWeeklyTarget / sevenDaysInSec) * secondsTaskHasBeenCreated
+  const targetAllHistoricDays = targetPerDay * historyDays
+  const historicDaysInSec = historyDays * 24 * 60 * 60
+  return (targetAllHistoricDays / historicDaysInSec) * secondsTaskHasBeenCreated
   // return (taskWeeklyTarget / 7) * daysTaskHasBeenCreated
 }

@@ -77,6 +77,7 @@ export default async function Home({ params }: { params: { id: string } }) {
           name: task.name,
           projectCompletionTarget: task.projectCompletionTarget,
           weeklyTarget: task.weeklyTarget,
+          historyDays: task.historyDays,
           unitBigLabel: task.unitBigLabel,
           unitSmallLabel: task.unitSmallLabel,
           archived: task.archived,

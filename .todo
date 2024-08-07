@@ -2,3 +2,8 @@
   Só pegar as ultimas 168 horas (7 dias) e não dias
   Cada tasklog tem a hora que ele foi feito
 ☐ Cards using table, <CardWrapper />
+☐ Se fizer + que 5 dias, e a pessoa fez zero de 1 habito, o unico habito que vai aparecer na tela é ele
+  A pessoa tem duas opções arquivar, ou fazer algum minuto. se quiser usar o app.y
+☐ ver um hurtmap dos ultimos dias
+✔ Fazer ajust de last x days custom @done(24-08-07 13:30)
+☐ Concertar modo cascata, para conseguir apagar um task sem precisar apagar todo o historico

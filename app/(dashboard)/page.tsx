@@ -21,32 +21,38 @@ function roundFloat(value: number, precision: number = 2) {
   return parseFloat(value.toFixed(precision))
 }
 
-function getLabelWeek(taskCreatedDate: Date) {
+function getLabelWeek(taskCreatedDate: Date, historyDays: number) {
   const daysTaskHasBeenCreated = getDaysUntilNow(taskCreatedDate)
-  if (daysTaskHasBeenCreated > 7) return 'Week'
+  if (daysTaskHasBeenCreated > 7 && historyDays === 7) return 'Week'
   if (daysTaskHasBeenCreated === 1) return 'Today'
+  if (daysTaskHasBeenCreated > historyDays) {
+    return 'Last ' + historyDays + ' days'
+  }
   return 'Last ' + daysTaskHasBeenCreated + ' days'
 }
 
-function getWeeklyText(task: _GetTasks[number]) {
-  const today = roundFloat(task.totalCompletedLast7Days)
+function getHistoryText(task: _GetTasks[number]) {
+  const doneAmount = roundFloat(task.totalCompletedLastHistoryDays) //in hour
   const target = roundFloat(
-    getTrueWeekTarget(task.createdAt, task.weeklyTarget),
+    getTrueWeekTarget(task.createdAt, task.weeklyTarget, task.historyDays),
     2
   )
 
   if (
     task.unitSmallLabel.toLowerCase() === 'min' &&
-    (today < 1 || target < 1)
+    (doneAmount < 1 || target < 1)
   ) {
-    return `${roundFloat(today * 60, 0)} / ${roundFloat(target * 60, 0)} min`
+    return `${roundFloat(doneAmount * 60, 0)} / ${roundFloat(
+      target * 60,
+      0
+    )} min`
   }
 
   if (task.unitSmallLabel.toLowerCase() === 'min') {
-    return `${today} / ${target} hours`
+    return `${doneAmount} / ${target} hours`
   }
 
-  return `${today} / ${target} ${task.unitBigLabel.toLowerCase()}`
+  return `${doneAmount} / ${target} ${task.unitBigLabel.toLowerCase()}`
 }
 
 function getLeftDays(task: _GetTasks[number]) {
@@ -172,14 +178,14 @@ export default async function Home({
                 <thead className="text-base">
                   <tr className="text-left">
                     <th className="w-[170px] font-medium">
-                      {getLabelWeek(task.createdAt)}:
+                      {getLabelWeek(task.createdAt, task.historyDays)}:
                     </th>
                     <th className="w-[170px] font-medium">total:</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
                   <tr>
-                    <td>{getWeeklyText(task)}</td>
+                    <td>{getHistoryText(task)}</td>
                     <td>
                       {roundFloat(task.totalCompleted)} /{' '}
                       {roundFloat(task.projectCompletionTarget)}

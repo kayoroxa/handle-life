@@ -26,6 +26,7 @@ export default async function Home({ params }: { params: { id: string } }) {
             name: values.name,
             percent: 0,
             weeklyTarget: values.weeklyTarget,
+            historyDays: 7,
             projectCompletionTarget: values.projectCompletionTarget,
             userEmail: email,
             unitBigLabel: values.unitBigLabel,
@@ -45,6 +46,7 @@ export default async function Home({ params }: { params: { id: string } }) {
           projectCompletionTarget: 1000,
           weeklyTarget: 5,
           icon: '💲',
+          historyDays: 7,
         }}
         submitText="Okay, Create that Task!"
       />
