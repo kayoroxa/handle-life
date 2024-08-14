@@ -17,6 +17,18 @@ import Link from 'next/link'
 import { IoMdArchive } from 'react-icons/io'
 import { _addDoneAmountInTask, _GetTasks, _getTasks } from '../actions'
 
+function getDoneAndTarget(task: _GetTasks[number]) {
+  const doneAmount = roundFloat(task.totalCompletedLastHistoryDays) //in hour
+  const target = roundFloat(
+    getTrueWeekTarget(task.createdAt, task.weeklyTarget, task.historyDays),
+    2
+  )
+  return {
+    doneAmount,
+    target,
+  }
+}
+
 function roundFloat(value: number, precision: number = 2) {
   return parseFloat(value.toFixed(precision))
 }
@@ -81,7 +93,15 @@ export default async function Home({
       getArchived: searchParams.showArchives === 'true',
     })
   ).sort((a, b) => {
-    return a.ofensiva - b.ofensiva
+    const aScore = getDoneAndTarget(a).target - getDoneAndTarget(a).doneAmount
+    const bScore = getDoneAndTarget(b).target - getDoneAndTarget(b).doneAmount
+
+    const isBadHabit = a.isBad
+
+    if (isBadHabit) return 1
+
+    return bScore - aScore
+    // return a.ofensiva - b.ofensiva
   })
 
   async function handleButtonsTimeClick(value: number, taskId: number) {
