@@ -101,7 +101,7 @@ export default async function Home({
     // if (isBadHabit) return 1
 
     // return bScore * b.ofensiva - aScore * a.ofensiva
-    return -b.ofensiva
+    return a.ofensiva - b.ofensiva
   })
 
   async function handleButtonsTimeClick(value: number, taskId: number) {
