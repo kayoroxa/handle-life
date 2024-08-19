@@ -110,7 +110,7 @@ export default async function Home({
 
     await _addDoneAmountInTask({
       taskId: taskId,
-      doneAmount: value / 60,
+      doneAmount: value,
     })
 
     revalidatePath('/')
@@ -186,11 +186,25 @@ export default async function Home({
               </section>
               <Card.ButtonsTime
                 data={{
-                  values: [1, 2, 3, 4, 5, 10, 15, 30],
+                  values:
+                    task.weeklyTarget < 800
+                      ? [1, 2, 3, 4, 5, 10, 15, 30]
+                      : [10, 20, 30, 40, 50, 100, 150, 300],
                   label: task.unitSmallLabel,
                   onClick: async (value: number) => {
                     'use server'
-                    await handleButtonsTimeClick(value, task.id)
+
+                    const test = [
+                      'hour',
+                      'hours',
+                      'hora',
+                      'horas',
+                      'Hour',
+                      'Hours',
+                    ].includes(task.unitBigLabel)
+
+                    const myValue = test ? value / 60 : value
+                    await handleButtonsTimeClick(myValue, task.id)
                   },
                 }}
               />
