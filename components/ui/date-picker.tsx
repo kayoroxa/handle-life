@@ -1,46 +1,52 @@
-"use client";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+'use client'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { forwardRef } from "react";
+} from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
+import { format } from 'date-fns'
+import { Calendar as CalendarIcon } from 'lucide-react'
+import { forwardRef } from 'react'
 
 export const DatePicker = forwardRef<
   HTMLDivElement,
   {
-    date?: Date;
-    setDate: (date?: Date) => void;
+    date?: Date
+    setDate: (date?: Date) => void
+    className?: string
   }
->(function DatePickerCmp({ date, setDate }, ref) {
+>(function DatePickerCmp({ date, setDate, className }, ref) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant={'outline'}
           className={cn(
-            "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground",
+            'w-full justify-start text-left font-normal',
+            !date && 'text-muted-foreground',
+            'bg-gray-700 text-white border-gray-600 hover:bg-gray-600', // Adicione estas classes
+            className
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? format(date, 'PPP') : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" ref={ref}>
+      <PopoverContent
+        className="w-auto p-0 bg-gray-700 border-gray-600" // Adicione estas classes
+        ref={ref}
+      >
         <Calendar
           mode="single"
           selected={date}
           onSelect={setDate}
           initialFocus
+          className="text-white" // Adicione esta classe
         />
       </PopoverContent>
     </Popover>
-  );
-});
+  )
+})

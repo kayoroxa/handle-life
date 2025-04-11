@@ -1,3 +1,6 @@
+import { _getImportantDates } from '@/app/actions-dates'
+import { Countdown } from '@/components/myUI/countdown'
+import { FaPlus } from 'react-icons/fa'
 import { IoCalendarNumberOutline } from 'react-icons/io5'
 
 import Card, { getColorByPercent } from '@/components/myUI/card'
@@ -86,6 +89,7 @@ export default async function Home({
   const email = session?.user?.email
 
   if (!email) return <div>Email not found</div>
+  const importantDates = await _getImportantDates({ email })
 
   const tasks = (
     await _getTasks({
@@ -118,8 +122,38 @@ export default async function Home({
 
   return (
     <div className="p-4 flex flex-col gap-6">
-      <section className="w-full bg-gray-600 p-4 rounded-lg">
-        Avatar: 🤖
+      <section className="w-full bg-gray-600 p-4 rounded-lg flex flex-col gap-4">
+        <header className="flex gap-4 items-center">
+          <h1>Important Dates</h1>
+          <Link href="/dates/create">
+            <Button>
+              <FaPlus className="mr-2" />
+              Add Date
+            </Button>
+          </Link>
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {importantDates.map(date => (
+            <div
+              key={date.id}
+              className="p-4 rounded-lg"
+              style={{ backgroundColor: date.color || '#3b82f6' }}
+            >
+              <div className="flex justify-between items-start">
+                <h2 className="text-xl font-bold">{date.name}</h2>
+                <Link href={`/dates/${date.id}`}>
+                  <Button variant="ghost">Edit</Button>
+                </Link>
+              </div>
+              <p className="text-sm mb-2">
+                {date.date.toLocaleDateString()} -{' '}
+                {date.date.toLocaleTimeString()}
+              </p>
+              <Countdown targetDate={date.date} />
+            </div>
+          ))}
+        </div>
       </section>
       <section className="w-full bg-gray-600 p-4 rounded-lg flex flex-col gap-4">
         <header className="flex gap-4 items-center">

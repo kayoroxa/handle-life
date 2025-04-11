@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  name       String?
-  blocked    Boolean    @default(false)
-  isAdmin    Boolean    @default(false)
-  imgUrl     String?
-  categories Category[]
-  tasks      Task[]
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  name          String?
+  blocked       Boolean         @default(false)
+  isAdmin       Boolean         @default(false)
+  imgUrl        String?
+  categories    Category[]
+  tasks         Task[]
+  ImportantDate ImportantDate[]
 }
 
 model Category {
@@ -63,4 +64,14 @@ model TaskLog {
   task       Task     @relation(fields: [taskId], references: [id])
   taskId     Int      @map("task_id")
   doneAmount Float
+}
+
+model ImportantDate {
+  id        Int      @id @default(autoincrement())
+  name      String
+  date      DateTime
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now())
+  color     String?  @default("#3b82f6") // Cor padrão azul
 }
