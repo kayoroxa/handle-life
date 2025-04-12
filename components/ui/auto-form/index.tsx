@@ -54,16 +54,18 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   dependencies?: Dependency<z.infer<SchemaType>>[]
 }) {
   const objectFormSchema = getObjectFormSchema(formSchema)
-  const defaultValues: DefaultValues<z.infer<typeof objectFormSchema>> | null =
-    getDefaultValues(objectFormSchema, fieldConfig)
+  const defaultValues = getDefaultValues(
+    objectFormSchema,
+    fieldConfig
+  ) as DefaultValues<z.infer<SchemaType>>
 
-  const form = useForm<z.infer<typeof objectFormSchema>>({
+  const form = useForm<z.infer<SchemaType>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? undefined,
     values: valuesProp,
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<SchemaType>) {
     const parsedValues = formSchema.safeParse(values)
     if (parsedValues.success) {
       onSubmitProp?.(parsedValues.data)

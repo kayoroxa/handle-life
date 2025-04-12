@@ -1,4 +1,5 @@
 import { _GetTasks } from '@/app/actions'
+import { Task } from '@prisma/client'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -119,4 +120,30 @@ export const getTrueWeekTarget = (
   const historicDaysInSec = historyDays * 24 * 60 * 60
   return (targetAllHistoricDays / historicDaysInSec) * secondsTaskHasBeenCreated
   // return (taskWeeklyTarget / 7) * daysTaskHasBeenCreated
+}
+
+function getDifferentLastDaysDone(task: Task) {
+  return getDaysUntilNow(task.lastDoneDate)
+}
+
+export function isHighLightedTask(task: Task) {
+  if (task.highlightInactiveDays > 0) {
+    const lastDaysDone = getDifferentLastDaysDone(task)
+    return lastDaysDone > task.highlightInactiveDays
+  }
+  return false
+}
+
+export function getHighLightedTasks(tasks: Task[]) {
+  return tasks.filter(task => isHighLightedTask(task))
+}
+
+export function getClassHighLightBlockOrNothing(
+  task: Task,
+  hasSomeHighlight: boolean
+) {
+  if (hasSomeHighlight === false) return ''
+  const isThisTaskHighlighted = isHighLightedTask(task)
+  if (isThisTaskHighlighted) return 'border-2 border-red-500'
+  else return 'opacity-50 pointer-events-none'
 }

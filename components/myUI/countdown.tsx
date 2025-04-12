@@ -4,14 +4,18 @@ import { useEffect, useState } from 'react'
 
 export function Countdown({ targetDate }: { targetDate: Date }) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate))
+  const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
+    setHasMounted(true)
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft(targetDate))
     }, 1000)
 
     return () => clearInterval(timer)
   }, [targetDate])
+
+  if (!hasMounted) return null // impede renderização antes da montagem no client
 
   function calculateTimeLeft(targetDate: Date) {
     const difference = targetDate.getTime() - new Date().getTime()

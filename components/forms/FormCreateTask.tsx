@@ -47,6 +47,7 @@ const formSchema = z.object({
   archived: z.boolean().default(false).optional(),
   icon: z.string().optional(),
   isBad: z.boolean().default(false).optional(),
+  highlightInactiveDays: z.coerce.number().min(0).default(0).optional(),
 })
 
 export default function FormCreateTask({
@@ -139,6 +140,10 @@ export default function FormCreateTask({
         },
         isBad: {
           label: 'Is this task bad? 🚫',
+        },
+        highlightInactiveDays: {
+          label: 'Dias para destacar inatividade (optional)',
+          description: '0 é desativado',
         },
 
         // sendMeMails: {

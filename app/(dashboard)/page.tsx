@@ -9,7 +9,9 @@ import {
   brDate,
   cn,
   formatDateDiff,
+  getClassHighLightBlockOrNothing,
   getDaysUntilNow,
+  getHighLightedTasks,
   getPercentVelocity,
   getTrueWeekTarget,
   predictCompletionDate,
@@ -108,6 +110,8 @@ export default async function Home({
     return a.ofensiva - b.ofensiva
   })
 
+  const hasSomeHighlightedTask = getHighLightedTasks(tasks).length > 0
+
   async function handleButtonsTimeClick(value: number, taskId: number) {
     'use server'
     // console.log(value)
@@ -197,6 +201,7 @@ export default async function Home({
           <div key={task.id} className="relative rounded-lg overflow-hidden">
             <Card
               className={cn(
+                getClassHighLightBlockOrNothing(task, hasSomeHighlightedTask),
                 'z-10',
                 getColorByPercent(getPercentVelocity(task)),
                 task.archived ? 'opacity-40' : ''

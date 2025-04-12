@@ -156,7 +156,10 @@ export async function _getTasks({
     const newTask = {
       ...task,
       totalCompletedLastHistoryDays,
-      lastDoneDate: task.taskLogs[0]?.date || new Date(),
+      lastDoneDate:
+        task.taskLogs
+          .map(log => new Date(log.date))
+          .sort((a, b) => b.getTime() - a.getTime())[0] || task.createdAt,
       ofensiva:
         totalCompletedLastHistoryDays /
         getTrueWeekTarget(task.createdAt, task.weeklyTarget, task.historyDays),
@@ -247,6 +250,7 @@ export async function _createTask({
   icon,
   historyDays,
   isBad,
+  highlightInactiveDays,
 }: {
   name: string
   projectCompletionTarget: number
@@ -259,6 +263,7 @@ export async function _createTask({
   additionalLink?: string
   icon?: string
   isBad?: boolean
+  highlightInactiveDays?: number
 }) {
   const task = await prisma.task.create({
     data: {
@@ -277,6 +282,7 @@ export async function _createTask({
       unitSmallLabel,
       icon,
       isBad,
+      highlightInactiveDays,
 
       // Incluir outras propriedades obrigatórias do modelo Task
       totalCompleted: 0, // ou outro valor inicial apropriado

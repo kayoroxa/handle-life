@@ -55,6 +55,8 @@ model Task {
   isBad                   Boolean   @default(false)
   historyDays             Int       @default(7) // last 7 days
 
+  highlightInactiveDays Int @default(0)
+
   categories Category[] // Relacionamento para múltiplas categorias
 }
 
